@@ -27,7 +27,7 @@ static void test_ld6001_ms72sf1_parse() {
 
     const auto result = parser.parse(frame.data(), frame.size());
 
-    assert(result.size() == 1);
+    assert(result.size() == 4);
     assert(result[0].targetId == hilink::Ld6001Parser::SensorTarget::TARGET_1);
     assert(result[0].x == 10);
     assert(result[0].y == 20);
