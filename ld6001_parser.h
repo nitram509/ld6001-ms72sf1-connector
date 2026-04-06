@@ -3,7 +3,7 @@
 
 #include <vector>
 
-#include "bak/include/baudvine/ringbuf.h"
+#include "include/baudvine/ringbuf.h"
 
 namespace hilink {
     constexpr uint8_t RX_DATA_PREAMBLE[] = {0xaa, 0xff, 0x03, 0x00};
