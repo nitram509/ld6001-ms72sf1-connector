@@ -4,8 +4,9 @@ project(ld6001_ms72sf1_connector)
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-add_executable(ld6001_ms72sf1_connector main.cpp ld6001_ms72sf1_connector.cpp)
-target_include_directories(ld6001_ms72sf1_connector PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})
+# no main exists
+#add_executable(ld6001_ms72sf1_connector main.cpp ld6001_ms72sf1_connector.cpp)
+#target_include_directories(ld6001_ms72sf1_connector PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})
 
 add_executable(ld6001_ms72sf1_connector_tests tests/ld6001_ms72sf1_connector_tests.cpp ld6001_ms72sf1_connector.cpp)
 target_include_directories(ld6001_ms72sf1_connector_tests PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})
