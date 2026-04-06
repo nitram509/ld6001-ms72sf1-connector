@@ -8,12 +8,9 @@ namespace hilink {
     }
 
     int16_t fromLittleEndianSigned(const uint8_t *data) {
-        const int16_t sign = (data[1] ^ 0b10000000) >> 7; // invert and get the sign bit
-        const int16_t val = (data[1] << 8) | data[0];
-        const int16_t valP = (~val) + 1;
-        const int16_t valN = val - 0b1000000000000000;
-        // TODO: Hacker-Mode ON: find a way without using ternary operator (or any other branching)
-        return sign ? valP : valN; // if sign is set, return negative value
+        const auto val = static_cast<int16_t>(data[0] | static_cast<uint16_t>(data[1]) << 8);
+        const int16_t mask = -((data[1] ^ 0x80) >> 7 & 1);
+        return static_cast<int16_t>((~val + 1 & mask) | (val - 0x8000 & ~mask));
     }
 
     uint16_t fromLittleEndian(const uint8_t *data) {
