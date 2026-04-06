@@ -3,7 +3,7 @@
 #include <iostream>
 #include <vector>
 
-#include "../ld6001_parser.h"
+#include "../ld6001_ms72sf1_connector.h"
 
 static void push_le16(std::vector<uint8_t>& frame, int16_t value) {
     const auto u = static_cast<uint16_t>(value);
@@ -11,7 +11,7 @@ static void push_le16(std::vector<uint8_t>& frame, int16_t value) {
     frame.push_back(static_cast<uint8_t>((u >> 8) & 0xFF));
 }
 
-static void test_Ld6001Parser_parse() {
+static void test_ld6001_ms72sf1_parse() {
     hilink::Ld6001Parser parser;
 
     // example bytes from the documentation
@@ -37,7 +37,7 @@ static void test_Ld6001Parser_parse() {
 }
 
 int main() {
-    test_Ld6001Parser_parse();
+    test_ld6001_ms72sf1_parse();
     std::cout << "All tests passed\n";
     return 0;
 }
