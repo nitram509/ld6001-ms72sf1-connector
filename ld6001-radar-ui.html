@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>LD2450-Connector Radar UI</title>
+    <link rel="stylesheet" href="spectre.min.css">
+    <link rel="stylesheet" href="spectre-exp.min.css">
+    <link rel="stylesheet" href="spectre-icons.min.css">
+    <style>
+        .radar-container {
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            height: 600px;
+            background-color: #f7f8f9;
+            border: 1px solid #e7e9ed;
+            position: relative;
+            overflow: hidden;
+        }
+        #radar-svg {
+            width: 100%;
+            height: 100%;
+        }
+        .person-dot {
+            transition: all 0.1s ease-out;
+        }
+        .person-label {
+            font-size: 40px;
+            fill: #3b4351;
+            font-weight: bold;
+            pointer-events: none;
+        }
+        .glow {
+            filter: drop-shadow(0 0 10px rgba(255, 255, 255, 0.8));
+        }
+    </style>
+</head>
+<body>
+    <header class="navbar p-2 shadow">
+        <section class="navbar-section">
+            <span class="navbar-brand mr-2">UART connection</span>
+        </section>
+        <section class="navbar-section">
+            <div class="input-group">
+                <select id="port-select" class="form-select" style="width: auto;">
+                    <option value="">No port selected</option>
+                </select>
+                <button id="connect-btn" class="btn btn-primary input-group-btn">Connect</button>
+            </div>
+        </section>
+    </header>
+
+    <main class="container grid-lg mt-2">
+        <div class="columns">
+            <div id="radar-container" class="d-none column col-12">
+                <div class="radar-container mb-2">
+                    <svg id="radar-svg" viewBox="-1000 0 2000 2000" preserveAspectRatio="xMidYMin meet">
+                        <!-- Sensor position indicator -->
+                        <circle cx="0" cy="0" r="20" fill="#acb3be" />
+                        <text x="0" y="40" text-anchor="middle" font-size="30" fill="#acb3be">Sensor</text>
+                        
+                        <!-- Ground grid -->
+                        <g id="grid" stroke="#e7e9ed" stroke-width="2" fill="none">
+                            <circle cx="0" cy="0" r="500" />
+                            <circle cx="0" cy="0" r="1000" />
+                            <circle cx="0" cy="0" r="1500" />
+                            <circle cx="0" cy="0" r="2000" />
+                            
+                            <!-- Radial lines -->
+                            <line x1="0" y1="0" x2="0" y2="2000" />
+                            <line x1="0" y1="0" x2="-1000" y2="1000" />
+                            <line x1="0" y1="0" x2="1000" y2="1000" />
+                            <line x1="0" y1="0" x2="-1000" y2="1732" /> <!-- 60 deg -->
+                            <line x1="0" y1="0" x2="1000" y2="1732" /> <!-- 60 deg -->
+                        </g>
+                        
+                        <!-- Targets will be rendered here -->
+                        <g id="targets-group"></g>
+                    </svg>
+                </div>
+            </div>
+            <div id="no-data-info" class="column col-12">
+                <div class="empty">
+                    <div class="empty-icon">
+                        <i class="icon icon-share"></i>
+                    </div>
+                    <p class="empty-title h5">No data yet</p>
+                    <p class="empty-subtitle">Connect to a serial port to start receiving data.</p>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="main.js" type="module"></script>
+</body>
+</html>
