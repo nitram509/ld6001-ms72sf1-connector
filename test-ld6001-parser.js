@@ -6,7 +6,7 @@ function assert(condition, message) {
     }
 }
 
-function testExampleBytes() {
+function testLd6001Parser() {
     const parser = new Ld6001Parser();
 
     // Bytes from "example bytes to describe a data frame.png"
@@ -42,7 +42,7 @@ function testExampleBytes() {
 
     const results = parser.parse(bytes);
 
-    console.log('Results:', JSON.stringify(results, null, 2));
+    console.log('Parsed sensor data:', JSON.stringify(results, null, 2));
 
     assert(results.length === 1, `Should find 1 person, got ${results.length}`);
     const p = results[0];
@@ -66,7 +66,7 @@ function testExampleBytes() {
 }
 
 try {
-    testExampleBytes();
+    testLd6001Parser();
     console.log('Example bytes test passed (check values above)!');
 } catch (e) {
     console.error('Test failed:', e);

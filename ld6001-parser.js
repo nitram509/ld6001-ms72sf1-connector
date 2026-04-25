@@ -43,7 +43,6 @@ function bytesToFloat32(ringBuffer, offset) {
  * @property {number} vx
  * @property {number} vy
  * @property {number} vz
- * @property {boolean} valid
  */
 
 /**
@@ -69,8 +68,7 @@ function bytes2SensorData(ringBuffer, offset) {
         z,
         vx,
         vy,
-        vz,
-        valid: true
+        vz
     };
 }
 

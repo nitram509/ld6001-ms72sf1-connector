@@ -16,6 +16,12 @@ Then you can access the web application by opening http://localhost:8000/index.h
 
 ## Development hints
 
+### Run tests
+
+```shell
+node test-ld6001-parser.js
+```
+
 ### Minify Javascript files
 
 ```shell
