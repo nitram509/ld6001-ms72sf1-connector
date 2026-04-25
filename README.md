@@ -4,17 +4,19 @@ compatible and tested with
 * ld6001a
 * ms72sf1
 
-## How to run tool?
+## Usage
 
-The connector is web applicaton, which requires modern web browser.
-Also, you need to run a web server. You can use Python's built-in web server.
+The connector is a web application, which requires a modern web browser to be used.
+Also, you need to run a web server. You can use Python's built-in web server within this repository's root folder:
 ```shell
 # requires Python 3.x
 python -m http.server 8000
 ```
 Then you can access the web application by opening http://localhost:8000/index.html
 
-## Minify Javascript files
+## Development hints
+
+### Minify Javascript files
 
 ```shell
 esbuild --minify --loader=js < index.js > index.min.js 
