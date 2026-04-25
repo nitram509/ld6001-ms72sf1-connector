@@ -2,11 +2,14 @@
 
 import {Ld6001Parser} from './ld6001-parser.js';
 
-const connectBtn = document.getElementById('connect-btn');
-const portSelect = document.getElementById('port-select');
-const targetsGroup = document.getElementById('targets-group');
-const noDataInfo = document.getElementById('no-data-info');
-const radarContainer = document.getElementById('radar-container');
+const appElements = {
+    connectBtn: document.getElementById('connect-btn'),
+    portSelect: document.getElementById('port-select'),
+    targetsGroup: document.getElementById('targets-group'),
+    noDataInfo: document.getElementById('no-data-info'),
+    radarContainer: document.getElementById('radar-container'),
+}
+
 
 const TARGET_COLORS = [
     '#5755d9', // Blue
@@ -36,14 +39,14 @@ async function updatePortList() {
     }
     const ports = await navigator.serial.getPorts();
     // Clear all except the first option
-    while (portSelect.options.length > 1) {
-        portSelect.remove(1);
+    while (appElements.portSelect.options.length > 1) {
+        appElements.portSelect.remove(1);
     }
     ports.forEach((p, index) => {
         const option = document.createElement('option');
         option.text = `Port ${index + 1}`;
         option.value = index;
-        portSelect.add(option);
+        appElements.portSelect.add(option);
     });
 }
 
@@ -55,9 +58,9 @@ async function connect() {
 
         await port.open({baudRate: 115200});
         console.log('Port opened');
-        connectBtn.textContent = 'Disconnect';
-        connectBtn.classList.remove('btn-primary');
-        connectBtn.classList.add('btn-error');
+        appElements.connectBtn.textContent = 'Disconnect';
+        appElements.connectBtn.classList.remove('btn-primary');
+        appElements.connectBtn.classList.add('btn-error');
 
         await initializeSensor();
 
@@ -78,9 +81,9 @@ async function disconnect() {
         // await port.forget(); // Keep the permission for future connections
         port = null;
     }
-    connectBtn.textContent = 'Connect';
-    connectBtn.classList.remove('btn-error');
-    connectBtn.classList.add('btn-primary');
+    appElements.connectBtn.textContent = 'Connect';
+    appElements.connectBtn.classList.remove('btn-error');
+    appElements.connectBtn.classList.add('btn-primary');
     console.log('Port closed');
 }
 
@@ -112,8 +115,8 @@ async function readLoop() {
     keepReading = true;
     while (port.readable && keepReading) {
         reader = port.readable.getReader();
-        radarContainer.classList.remove('d-none');
-        noDataInfo.classList.add('d-none');
+        appElements.radarContainer.classList.remove('d-none');
+        appElements.noDataInfo.classList.add('d-none');
         try {
             while (true) {
                 const {value, done} = await reader.read();
@@ -139,7 +142,7 @@ async function readLoop() {
                                 console.log(`Target ${id}, ${target.objectId}: x=${target.x.toFixed(2)}, y=${target.y.toFixed(2)}, z=${target.z.toFixed(2)}, dist=${distance.toFixed(2)}`);
                             }
                         } else {
-                            if (noDataInfo) noDataInfo.classList.remove('d-none');
+                            if (appElements.noDataInfo) appElements.noDataInfo.classList.remove('d-none');
                             // clearTargets();
                         }
                     }
@@ -149,13 +152,13 @@ async function readLoop() {
             console.error('Read error:', error);
         } finally {
             reader.releaseLock();
-            // radarContainer.classList.add('d-none');
-            noDataInfo.classList.remove('d-none');
+            // appElements.radarContainer.classList.add('d-none');
+            appElements.noDataInfo.classList.remove('d-none');
         }
     }
 }
 
-connectBtn.addEventListener('click', () => {
+appElements.connectBtn.addEventListener('click', () => {
     if (port && port.readable) {
         disconnect();
     } else {
@@ -164,16 +167,16 @@ connectBtn.addEventListener('click', () => {
 });
 
 function clearTargets() {
-    if (targetsGroup) {
-        targetsGroup.innerHTML = '';
+    if (appElements.targetsGroup) {
+        appElements.targetsGroup.innerHTML = '';
     }
 }
 
 function renderTargets(targets) {
-    if (!targetsGroup) return;
+    if (!appElements.targetsGroup) return;
 
     // Simple way: clear and redraw. For 3 objects, this is fine for performance.
-    targetsGroup.innerHTML = '';
+    appElements.targetsGroup.innerHTML = '';
 
     let maxTargets = 3;
 
@@ -229,7 +232,7 @@ function renderTargets(targets) {
 
         g.appendChild(dot);
         g.appendChild(label);
-        targetsGroup.appendChild(g);
+        appElements.targetsGroup.appendChild(g);
     });
 }
 
@@ -243,8 +246,8 @@ async function initAfterLoad() {
     } else {
         const msg = 'Web Serial API not supported in this browser.';
         console.error(msg);
-        connectBtn.disabled = true;
-        portSelect.disabled = true;
+        appElements.connectBtn.disabled = true;
+        appElements.portSelect.disabled = true;
         const subtitle = document.querySelector('.empty-subtitle');
         if (subtitle) subtitle.textContent = msg;
     }
