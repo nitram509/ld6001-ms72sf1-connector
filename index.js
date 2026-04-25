@@ -228,7 +228,7 @@ function renderTargets(targets) {
         label.setAttribute('text-anchor', 'middle');
         label.setAttribute('class', 'person-label');
         const distance = Math.sqrt(target.x ** 2 + target.y ** 2 + target.z ** 2);
-        label.textContent = `#${target.objectId} | ${distance.toFixed(2)}m | x=${target.x.toFixed(2)} | y=${target.y.toFixed(2)}`;
+        label.textContent = `#${target.objectId} | ${distance.toFixed(2)}m | x=${target.x.toFixed(2)} | y=${target.y.toFixed(2)} | z=${target.z.toFixed(2)}`;
 
         g.appendChild(dot);
         g.appendChild(label);
