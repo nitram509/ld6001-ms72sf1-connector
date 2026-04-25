@@ -6,30 +6,31 @@ const RX_HEADER = new Uint8Array([0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08
 const MAX_BUF_SIZE = 4096;
 
 /**
- * @param buffer
+ * @param {RingBuffer} ringBuffer
  * @param offset
  * @returns {number}
  */
-function bytesToUint32(buffer, offset) {
-    return (buffer.get(offset + 0) |
-        (buffer.get(offset + 1) << 8) |
-        (buffer.get(offset + 2) << 16) |
-        (buffer.get(offset + 3) << 24)) >>> 0;
+function bytesToUint32(ringBuffer, offset) {
+    return (ringBuffer.get(offset + 0) |
+        (ringBuffer.get(offset + 1) << 8) |
+        (ringBuffer.get(offset + 2) << 16) |
+        (ringBuffer.get(offset + 3) << 24)) >>> 0;
 }
 
 /**
- * @param buffer
+ * @param {RingBuffer} ringBuffer
  * @param offset
  * @returns {number}
  */
-function bytesToFloat32(buffer, offset) {
-    const bytes = new Uint8Array([
-        buffer.get(offset + 0),
-        buffer.get(offset + 1),
-        buffer.get(offset + 2),
-        buffer.get(offset + 3)
-    ]);
-    return new Float32Array(bytes.buffer)[0];
+function bytesToFloat32(ringBuffer, offset) {
+    const a = new Uint8Array([
+        ringBuffer.get(offset + 0),
+        ringBuffer.get(offset + 1),
+        ringBuffer.get(offset + 2),
+        ringBuffer.get(offset + 3)
+    ]).buffer;
+    const dv = new DataView(a);
+    return dv.getFloat32(0, true); // convert from Little Endian to platform endianness
 }
 
 /**
@@ -46,19 +47,19 @@ function bytesToFloat32(buffer, offset) {
  */
 
 /**
- * @param {RingBuffer} buffer
+ * @param {RingBuffer} ringBuffer
  * @param {number} offset
  * @returns {SensorData}
  */
-function bytes2SensorData(buffer, offset) {
-    const id = bytesToUint32(buffer, offset);
-    const q = bytesToUint32(buffer, offset + 4);
-    const x = bytesToFloat32(buffer, offset + 8) * 1000;
-    const y = bytesToFloat32(buffer, offset + 12) * 1000;
-    const z = bytesToFloat32(buffer, offset + 16) * 1000;
-    const vx = bytesToFloat32(buffer, offset + 20);
-    const vy = bytesToFloat32(buffer, offset + 24);
-    const vz = bytesToFloat32(buffer, offset + 28);
+function bytes2SensorData(ringBuffer, offset) {
+    const id = bytesToUint32(ringBuffer, offset);
+    const q = bytesToUint32(ringBuffer, offset + 4);
+    const x = bytesToFloat32(ringBuffer, offset + 8);
+    const y = bytesToFloat32(ringBuffer, offset + 12);
+    const z = bytesToFloat32(ringBuffer, offset + 16);
+    const vx = bytesToFloat32(ringBuffer, offset + 20);
+    const vy = bytesToFloat32(ringBuffer, offset + 24);
+    const vz = bytesToFloat32(ringBuffer, offset + 28);
 
     return {
         objectId: id,
@@ -73,7 +74,7 @@ function bytes2SensorData(buffer, offset) {
     };
 }
 
-export class Ld6001Connector {
+export class Ld6001Parser {
     constructor() {
         this.buffer = new RingBuffer(MAX_BUF_SIZE);
     }

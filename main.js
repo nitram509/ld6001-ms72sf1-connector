@@ -1,6 +1,6 @@
 'use strict';
 
-import {Ld6001Connector} from './ld6001-connector.js';
+import {Ld6001Parser} from './ld6001-parser.js';
 
 const connectBtn = document.getElementById('connect-btn');
 const portSelect = document.getElementById('port-select');
@@ -233,7 +233,7 @@ function renderTargets(targets) {
     });
 }
 
-const parser = new Ld6001Connector();
+const parser = new Ld6001Parser();
 
 async function initAfterLoad() {
     if ('serial' in navigator) {

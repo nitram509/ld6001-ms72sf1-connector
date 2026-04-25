@@ -1,4 +1,9 @@
+'use strict';
+
 export class RingBuffer {
+    /**
+     * @param {number} capacity
+     */
     constructor(capacity) {
         if (!Number.isInteger(capacity) || capacity <= 0) {
             throw new RangeError('capacity must be a positive integer');
@@ -9,6 +14,11 @@ export class RingBuffer {
         this.count = 0;
     }
 
+    /**
+     * Adds a new element to the buffer.
+     * If the buffer is full, the oldest element is removed.
+     * @param {number} byte
+     */
     push(byte) {
         if (this.count === this.capacity) {
             this.popFront();
@@ -18,6 +28,10 @@ export class RingBuffer {
         this.count++;
     }
 
+    /**
+     * Removes the first element from the buffer.
+     * If the buffer is empty, this method does nothing.
+     */
     popFront() {
         if (this.count === 0) {
             return;
@@ -26,10 +40,17 @@ export class RingBuffer {
         this.count--;
     }
 
+    /**
+     * @returns {number}
+     */
     size() {
         return this.count;
     }
 
+    /**
+     * @param index
+     * @returns {undefined|number}
+     */
     get(index) {
         if (index < 0 || index >= this.count) {
             return undefined;
