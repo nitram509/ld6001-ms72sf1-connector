@@ -9,7 +9,7 @@ function assert(condition, message) {
 function testLd6001Parser() {
     const parser = new Ld6001Parser();
 
-    // Bytes from "example bytes to describe a data frame.png"
+    // Bytes from "MS72SF1_Datesheet_K_EN_V.1.1.0.pdf"
     const bytes = new Uint8Array([
         // Header (8 bytes)
         0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08,
@@ -49,8 +49,8 @@ function testLd6001Parser() {
     assert(p.objectId === 0, `objectId should be 0, got ${p.objectId}`);
 
     // Note: Float32 representation can vary slightly.
-    // The image text description says: x=-1.17, y=2.50, z=0.31
-    // However, the byte values in the image tell a different story (maybe some were swapped or misinterpreted in the text):
+    // The PDF text description says: x=-1.17, y=2.50, z=0.31
+    // However, the byte values in the PDF tell a different story (maybe some were swapped or misinterpreted in the text):
     // 21 28 96 BF -> x: -1.173
     // 72 6F 81 BF -> y: -1.011
     // CB 85 20 40 -> z: 2.508167
