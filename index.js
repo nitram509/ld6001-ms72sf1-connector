@@ -28,10 +28,10 @@ let port;
 let reader;
 let keepReading = true;
 
-//# TODO finetuning required
-let maxX = 1200;
-let minX = -1200;
-let maxY = 2000;
+//# TODO fine tuning required
+let maxX = 12;
+let minX = -12;
+let maxY = 12;
 
 async function updatePortList() {
     if (!('serial' in navigator)) {
