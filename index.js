@@ -89,7 +89,10 @@ class AppUI {
             this.max_vz = Math.max(this.max_vz, sd.vz);
         }
 
-        const maxMovement = Math.max(this.max_vx, this.max_vy, this.max_vz);
+        const maxMovement = Math.max(
+            Math.abs(this.min_vx), Math.abs(this.min_vy), Math.abs(this.min_vz),
+            Math.abs(this.max_vx), Math.abs(this.max_vy), Math.abs(this.max_vz)
+        );
         while (this.coordPointsLayer.hasChildNodes()) {
             this.coordPointsLayer.removeChild(this.coordPointsLayer.firstChild);
         }
@@ -112,7 +115,7 @@ class AppUI {
                     elem.vy.innerText = sd.vy.toFixed(3);
                     elem.vz.innerText = sd.vz.toFixed(3);
 
-                    const movement = Math.max(Math.abs(sd.x), Math.abs(sd.y), Math.abs(sd.z));
+                    const movement = Math.max(Math.abs(sd.vx), Math.abs(sd.vy), Math.abs(sd.vz));
                     drawCoordinateCircle(sd.x, sd.y, sd.z, TARGET_COLORS[i], movement / maxMovement);
                 } else {
                     if (mustUpdateSensorDataListLength) {
