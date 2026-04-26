@@ -4,6 +4,19 @@ import {Ld6001Parser} from './ld6001-parser.js';
 
 const MAX_SENSOR_ELEMENTS = 10;
 
+const TARGET_COLORS = [
+    '#7231e6', // Blue
+    '#32b643', // Green
+    '#ac7654', // Orange
+    '#ffb700', // Yellow
+    '#00d1b2', // Teal
+    '#f03d5d', // Pink/Red
+    '#9c27b0', // Purple
+    '#3448bc', // Indigo
+    '#036f80', // Cyan
+    '#265e0f'  // dark green
+];
+
 class AppUI {
 
     constructor() {
@@ -13,8 +26,10 @@ class AppUI {
 
         this.sensorElements = [];
         for (let i = 0; i < MAX_SENSOR_ELEMENTS; i++) {
+            let tileElem = document.getElementById("sensor-" + i);
+            tileElem.getElementsByClassName("tile-icon")[0].style.backgroundColor = TARGET_COLORS[i];
             this.sensorElements.push({
-                tile: document.getElementById("sensor-" + i),
+                tile: tileElem,
                 divider: document.getElementById("sensor-divider-" + i),
                 x: document.getElementById("sensor-" + i + "-x"),
                 y: document.getElementById("sensor-" + i + "-y"),
@@ -282,19 +297,6 @@ export class ConnectorApp {
     }
 
 }
-
-const TARGET_COLORS = [
-    '#5755d9', // Blue
-    '#32b643', // Green
-    '#e85600', // Orange
-    '#ffb700', // Yellow
-    '#00d1b2', // Teal
-    '#f03d5d', // Pink/Red
-    '#9c27b0', // Purple
-    '#3f51b5', // Indigo
-    '#00bcd4', // Cyan
-    '#ff5722'  // Deep Orange
-];
 
 function renderTargets(targets) {
     if (!appElements.targetsGroup) return;
