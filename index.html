@@ -25,7 +25,7 @@
 <div class="container">
     <div class="columns bg-dark text-light">
         <div class="column col-auto p-1">
-            <span class="h5">Sensor connection:</span>
+            <span class="h5">mmWave sensor:</span>
             <button id="btn-connect" class="btn btn-primary">Connect</button>
             <select id="port-speed-select" class="form-select text-dark" style="width: auto;">
                 <option value="9600">9600</option>
@@ -40,6 +40,7 @@
                 <option value="576000">576000</option>
                 <option value="921600">921600</option>
             </select>
+            <button id="btn-show-help" class="bg-secondary text-dark pl-2">?</button>
         </div>
     </div>
 </div>
@@ -48,6 +49,24 @@
     <div class="columns">
         <div class="column col-12">
             <!--                <textarea id="txt-log-area" class="form-input" rows="3" readonly placeholder="Logging information"></textarea>-->
+        </div>
+    </div>
+</div>
+
+<div id="modal-help" class="modal active modal-lg d-none">
+    <a href="#closeHelp" class="modal-overlay" aria-label="Close"></a>
+    <div class="modal-container">
+        <div class="modal-header">
+            <a id="a-close-help" href="#closeHelp" class="btn btn-clear float-right" aria-label="Close"></a>
+            <div class="modal-title h5">This diagram shows how to connect the sensor to your computer</div>
+        </div>
+        <div class="modal-body">
+            <div class="content">
+                <img src="mmWave-how-to-connect.png" alt="diagram how to connect the sensor to your computer" class="img-responsive">
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button id="btn-close-help" class="btn btn-primary">Close</button>
         </div>
     </div>
 </div>
@@ -93,7 +112,7 @@
                         </div>
                         <div class="col-9 col-sm-12">
                             <label class="form-switch">
-                                <input type="checkbox">
+                                <input type="checkbox" disabled>
                                 <i class="form-icon"></i>
                             </label>
                         </div>

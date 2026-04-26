@@ -25,6 +25,11 @@ class AppUI {
         this.btnStop = document.getElementById('btn-stop');
         this.coordPointsLayer = document.getElementById('coord-points-layer');
 
+        this.modalHelp = document.getElementById('modal-help');
+        this.btnCloseHelp = document.getElementById('btn-close-help');
+        this.btnShowHelp = document.getElementById('btn-show-help');
+        this.aCloseHelp = document.getElementById('a-close-help');
+
         this.sensorElements = [];
         for (let i = 0; i < MAX_SENSOR_ELEMENTS; i++) {
             let tileElem = document.getElementById("sensor-" + i);
@@ -40,6 +45,14 @@ class AppUI {
                 vz: document.getElementById("sensor-" + i + "-vz"),
             });
         }
+
+        const hideAllSensorElements = function () {
+            for (let i = 0; i < MAX_SENSOR_ELEMENTS; i++) {
+                this.hide(this.sensorElements[i].tile);
+                this.hide(this.sensorElements[i].divider);
+            }
+        }
+        requestAnimationFrame(hideAllSensorElements.bind(this));
 
         this.txtSensorXMinMax = document.getElementById("sensor-x-min-max");
         this.txtSensorYMinMax = document.getElementById("sensor-y-min-max");
@@ -196,6 +209,15 @@ export class ConnectorApp {
             if (this.port) {
                 this.sendSerialCommand('AT+STOP\n');
             }
+        });
+        this.appUi.btnCloseHelp.addEventListener('click', () => {
+            this.appUi.hide(this.appUi.modalHelp);
+        });
+        this.appUi.aCloseHelp.addEventListener('click', () => {
+            this.appUi.hide(this.appUi.modalHelp);
+        });
+        this.appUi.btnShowHelp.addEventListener('click', () => {
+            this.appUi.show(this.appUi.modalHelp);
         });
     }
 
