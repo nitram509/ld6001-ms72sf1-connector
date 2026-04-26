@@ -2,6 +2,8 @@
 
 import {Ld6001Parser} from './ld6001-parser.js';
 
+const MAX_SENSOR_ELEMENTS = 10;
+
 class AppUI {
 
     constructor() {
@@ -9,14 +11,19 @@ class AppUI {
         this.btnStart = document.getElementById('btn-start');
         this.btnStop = document.getElementById('btn-stop');
 
-        this.txtSensor0 = document.getElementById("sensor-0");
-        this.txtSensor0X = document.getElementById("sensor-0-x");
-        this.txtSensor0Y = document.getElementById("sensor-0-y");
-        this.txtSensor0Z = document.getElementById("sensor-0-z");
-
-        this.txtSensor0VX = document.getElementById("sensor-0-vx");
-        this.txtSensor0VY = document.getElementById("sensor-0-vy");
-        this.txtSensor0VZ = document.getElementById("sensor-0-vz");
+        this.sensorElements = [];
+        for (let i = 0; i < MAX_SENSOR_ELEMENTS; i++) {
+            this.sensorElements.push({
+                tile: document.getElementById("sensor-" + i),
+                divider: document.getElementById("sensor-divider-" + i),
+                x: document.getElementById("sensor-" + i + "-x"),
+                y: document.getElementById("sensor-" + i + "-y"),
+                z: document.getElementById("sensor-" + i + "-z"),
+                vx: document.getElementById("sensor-" + i + "-vx"),
+                vy: document.getElementById("sensor-" + i + "-vy"),
+                vz: document.getElementById("sensor-" + i + "-vz"),
+            });
+        }
 
         this.txtSensorXMinMax = document.getElementById("sensor-x-min-max");
         this.txtSensorYMinMax = document.getElementById("sensor-y-min-max");
@@ -45,43 +52,63 @@ class AppUI {
      * @param {SensorData[]} sensorDatas
      */
     async renderSensorData(sensorDatas) {
-        const mustUpdateSensorDataList = sensorDatas.length === this.no_of_sensors;
-        this.no_of_sensors = sensorDatas.length;
-        if (sensorDatas.length > 0) {
-            const update = function () {
-                if (mustUpdateSensorDataList) {
-                    this.show(this.txtSensor0); // makes odd blinking
-                }
-                this.txtSensor0X.innerText = sensorDatas[0].x.toFixed(3);
-                this.txtSensor0Y.innerText = sensorDatas[0].y.toFixed(3);
-                this.txtSensor0Z.innerText = sensorDatas[0].z.toFixed(3);
-                this.txtSensor0VX.innerText = sensorDatas[0].vx.toFixed(3);
-                this.txtSensor0VY.innerText = sensorDatas[0].vy.toFixed(3);
-                this.txtSensor0VZ.innerText = sensorDatas[0].vz.toFixed(3);
-
-                this.txtSensorXMinMax.innerHTML = `${this.min_x.toFixed(3)}<br>${this.max_x.toFixed(3)}`;
-                this.txtSensorYMinMax.innerHTML = `${this.min_y.toFixed(3)}<br>${this.max_y.toFixed(3)}`;
-                this.txtSensorZMinMax.innerHTML = `${this.min_z.toFixed(3)}<br>${this.max_z.toFixed(3)}`;
-                this.txtSensorVXMinMax.innerHTML = `${this.min_vx.toFixed(3)}<br>${this.max_vx.toFixed(3)}`;
-                this.txtSensorVYMinMax.innerHTML = `${this.min_vy.toFixed(3)}<br>${this.max_vy.toFixed(3)}`;
-                this.txtSensorVZMinMax.innerHTML = `${this.min_vz.toFixed(3)}<br>${this.max_vz.toFixed(3)}`;
-            }
-            this.min_x = Math.min(this.min_x, sensorDatas[0].x);
-            this.min_y = Math.min(this.min_y, sensorDatas[0].y);
-            this.min_z = Math.min(this.min_z, sensorDatas[0].z);
-            this.max_x = Math.max(this.max_x, sensorDatas[0].x);
-            this.max_y = Math.max(this.max_y, sensorDatas[0].y);
-            this.max_z = Math.max(this.max_z, sensorDatas[0].z);
-            this.min_vx = Math.min(this.min_vx, sensorDatas[0].vx);
-            this.min_vy = Math.min(this.min_vy, sensorDatas[0].vy);
-            this.min_vz = Math.min(this.min_vz, sensorDatas[0].vz);
-            this.max_vx = Math.max(this.max_vx, sensorDatas[0].vx);
-            this.max_vy = Math.max(this.max_vy, sensorDatas[0].vy);
-            this.max_vz = Math.max(this.max_vz, sensorDatas[0].vz);
-            requestAnimationFrame(update.bind(this));
-        } else {
-            this.hide(this.txtSensor0);
+        if (sensorDatas.length === 0) {
+            return
         }
+
+        const number_of_updates = Math.min(sensorDatas.length, MAX_SENSOR_ELEMENTS);
+        for (let i = 0; i < number_of_updates; i++) {
+            const sd = sensorDatas[i];
+            this.min_x = Math.min(this.min_x, sd.x);
+            this.min_y = Math.min(this.min_y, sd.y);
+            this.min_z = Math.min(this.min_z, sd.z);
+            this.max_x = Math.max(this.max_x, sd.x);
+            this.max_y = Math.max(this.max_y, sd.y);
+            this.max_z = Math.max(this.max_z, sd.z);
+            this.min_vx = Math.min(this.min_vx, sd.vx);
+            this.min_vy = Math.min(this.min_vy, sd.vy);
+            this.min_vz = Math.min(this.min_vz, sd.vz);
+            this.max_vx = Math.max(this.max_vx, sd.vx);
+            this.max_vy = Math.max(this.max_vy, sd.vy);
+            this.max_vz = Math.max(this.max_vz, sd.vz);
+        }
+
+        const mustUpdateSensorDataListLength = sensorDatas.length !== this.no_of_sensors;
+        this.no_of_sensors = sensorDatas.length;
+        const updateSensorDatas = function () {
+            for (let i = 0; i < MAX_SENSOR_ELEMENTS; i++) {
+                const elem = this.sensorElements[i];
+                if (i < sensorDatas.length) {
+                    const sd = sensorDatas[i];
+                    if (mustUpdateSensorDataListLength) {
+                        this.show(elem.tile);
+                        this.show(elem.divider);
+                    }
+                    elem.x.innerText = sd.x.toFixed(3);
+                    elem.y.innerText = sd.y.toFixed(3);
+                    elem.z.innerText = sd.z.toFixed(3);
+                    elem.vx.innerText = sd.vx.toFixed(3);
+                    elem.vy.innerText = sd.vy.toFixed(3);
+                    elem.vz.innerText = sd.vz.toFixed(3);
+                } else {
+                    if (mustUpdateSensorDataListLength) {
+                        this.hide(elem.tile);
+                        this.hide(elem.divider);
+                    }
+                }
+            }
+        }
+        requestAnimationFrame(updateSensorDatas.bind(this));
+
+        const updateSensorDataHistory = function () {
+            this.txtSensorXMinMax.innerHTML = `${this.min_x.toFixed(3)}<br>${this.max_x.toFixed(3)}`;
+            this.txtSensorYMinMax.innerHTML = `${this.min_y.toFixed(3)}<br>${this.max_y.toFixed(3)}`;
+            this.txtSensorZMinMax.innerHTML = `${this.min_z.toFixed(3)}<br>${this.max_z.toFixed(3)}`;
+            this.txtSensorVXMinMax.innerHTML = `${this.min_vx.toFixed(3)}<br>${this.max_vx.toFixed(3)}`;
+            this.txtSensorVYMinMax.innerHTML = `${this.min_vy.toFixed(3)}<br>${this.max_vy.toFixed(3)}`;
+            this.txtSensorVZMinMax.innerHTML = `${this.min_vz.toFixed(3)}<br>${this.max_vz.toFixed(3)}`;
+        }
+        requestAnimationFrame(updateSensorDataHistory.bind(this));
     }
 
     enableSensorActions() {
@@ -95,11 +122,11 @@ class AppUI {
     }
 
     show(element) {
-        element.classList.add('d-none');
+        element.classList.remove('d-none');
     }
 
     hide(element) {
-        element.classList.remove('d-none');
+        element.classList.add('d-none');
     }
 
     enable(element) {
