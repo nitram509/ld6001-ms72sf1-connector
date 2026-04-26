@@ -1,94 +1,224 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns="http://www.w3.org/1999/html">
 <head>
     <meta charset="UTF-8">
     <title>LD2450-Connector Radar UI</title>
     <link rel="stylesheet" href="spectre.min.css">
-    <style>
-        .radar-container {
-            display: flex;
-            justify-content: center;
-            align-items: flex-start;
-            height: 600px;
-            background-color: #f7f8f9;
-            border: 1px solid #e7e9ed;
-            position: relative;
-            overflow: hidden;
-        }
-        #radar-svg {
-            width: 100%;
-            height: 100%;
-        }
-        .person-dot {
-            transition: all 0.1s ease-out;
-        }
-        .person-label {
-            font-size: 40px;
-            fill: #3b4351;
-            font-weight: bold;
-            pointer-events: none;
-        }
-        .glow {
-            filter: drop-shadow(0 0 10px rgba(255, 255, 255, 0.8));
-        }
-    </style>
 </head>
 <body>
-    <header class="navbar p-2 shadow">
-        <section class="navbar-section">
-            <span class="navbar-brand mr-2">UART connection</span>
-        </section>
-        <section class="navbar-section">
-            <div class="input-group">
-                <select id="port-select" class="form-select" style="width: auto;">
-                    <option value="">No port selected</option>
+
+    <div class="container">
+        <div class="columns bg-dark text-light">
+            <div class="column col-auto p-1">
+                <span class="h5">Sensor connection:</span>
+                <button id="btn-connect" class="btn btn-primary">Connect</button>
+                <select id="port-speed-select" class="form-select text-dark" style="width: auto;">
+                    <option value="9600">9600</option>
+                    <option value="19200">19200</option>
+                    <option value="28800">28800</option>
+                    <option value="38400">38400</option>
+                    <option value="57600">57600</option>
+                    <option value="76800">76800</option>
+                    <option selected="selected" value="115200">115200 (default)</option>
+                    <option value="230400">230400</option>
+                    <option value="460800">460800</option>
+                    <option value="576000">576000</option>
+                    <option value="921600">921600</option>
                 </select>
-                <button id="connect-btn" class="btn btn-primary input-group-btn">Connect</button>
             </div>
-        </section>
-    </header>
+        </div>
+    </div>
 
-    <main class="container grid-lg mt-2">
+    <div class="container">
         <div class="columns">
-            <div id="radar-container" class="d-none column col-12">
-                <div class="radar-container mb-2">
-                    <svg id="radar-svg" viewBox="-1000 0 2000 2000" preserveAspectRatio="xMidYMin meet">
-                        <!-- Sensor position indicator -->
-                        <circle cx="0" cy="0" r="20" fill="#acb3be" />
-                        <text x="0" y="40" text-anchor="middle" font-size="30" fill="#acb3be">Sensor</text>
-
-                        <!-- Ground grid -->
-                        <g id="grid" stroke="#e7e9ed" stroke-width="2" fill="none">
-                            <circle cx="0" cy="0" r="500" />
-                            <circle cx="0" cy="0" r="1000" />
-                            <circle cx="0" cy="0" r="1500" />
-                            <circle cx="0" cy="0" r="2000" />
-
-                            <!-- Radial lines -->
-                            <line x1="0" y1="0" x2="0" y2="2000" />
-                            <line x1="0" y1="0" x2="-1000" y2="1000" />
-                            <line x1="0" y1="0" x2="1000" y2="1000" />
-                            <line x1="0" y1="0" x2="-1000" y2="1732" /> <!-- 60 deg -->
-                            <line x1="0" y1="0" x2="1000" y2="1732" /> <!-- 60 deg -->
-                        </g>
-
-                        <!-- Targets will be rendered here -->
-                        <g id="targets-group"></g>
-                    </svg>
-                </div>
+            <div class="column col-12">
+<!--                <textarea id="txt-log-area" class="form-input" rows="3" readonly placeholder="Logging information"></textarea>-->
             </div>
-            <div id="no-data-info" class="column col-12">
-                <div class="empty">
-                    <div class="empty-icon">
-                        <i class="icon icon-share"></i>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="columns">
+            <div class="column col-4">
+                <div class="panel">
+                    <div class="panel-header">
+                        <div class="panel-title bg-secondary p-1 h5">Configuration</div>
                     </div>
-                    <p class="empty-title h5">No data yet</p>
-                    <p class="empty-subtitle">Connect to a serial port to start receiving data.</p>
+<!--                    <div class="panel-nav">-->
+<!--                        &lt;!&ndash; navigation components: tabs, breadcrumbs or pagination &ndash;&gt;-->
+<!--                    </div>-->
+                    <div class="panel-body">
+                        <div class="form-group">
+                            <label class="form-label" for="btn-calibrate">Calibration</label>
+                            <button id="btn-calibrate" class="btn btn-primary">Calibrate</button>
+                        </div>
+                    </div>
+<!--                    <div class="panel-footer">-->
+<!--                        &lt;!&ndash; buttons or inputs &ndash;&gt;-->
+<!--                    </div>-->
+                </div>
+
+            </div>
+
+            <div class="column col-8">
+                <div class="bg-gray p-2">
+                    <div class="form-horizontal">
+                        <div class="form-group">
+                            <div class="col-3 col-sm-12">
+<!--                                <label class="form-label" for="input-example-1">Name</label>-->
+                                <label class="form-label" for="btn-calibrate">Reading sensor data</label>
+                            </div>
+                            <div class="col-9 col-sm-12">
+<!--                                <input class="form-input" type="text" id="input-example-1" placeholder="Name">-->
+                                <button id="btn-start" class="btn btn-primary disabled">Start</button>
+                                <button id="btn-stop" class="btn btn-primary disabled">Stop</button>
+                            </div>
+                            <div class="col-3 col-sm-12">
+                                <label class="form-label" for="btn-calibrate">Record data</label>
+                            </div>
+                            <div class="col-9 col-sm-12">
+                                <label class="form-switch">
+                                    <input type="checkbox">
+                                    <i class="form-icon"></i>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="columns">
+                    <div class="column col-5">
+                        <div class="panel">
+                            <div class="panel-header">
+                                <div class="panel-title bg-secondary p-1 h5">Sensor Data History</div>
+                            </div>
+                            <div class="panel-body">
+                                <!-- START sensor data history -->
+                                <div class="tile tile-centered">
+                                    <div class="tile-content">
+                                        <div class="columns">
+                                            <div class="column col-2">
+                                                <small class="tile-subtitle text-gray">X min:<br>X max:</small>
+                                            </div>
+                                            <div class="column col-2">
+                                                <small id="sensor-x-min-max" class="tile-subtitle text-gray">______<br>______</small>
+                                            </div>
+                                            <div class="column col-2">
+                                                <small class="tile-subtitle text-gray">X min:<br>X max:</small>
+                                            </div>
+                                            <div class="column col-2">
+                                                <small id="sensor-y-min-max" class="tile-subtitle text-gray">______<br>______</small>
+                                            </div>
+                                            <div class="column col-2">
+                                                <small class="tile-subtitle text-gray">X min:<br>X max:</small>
+                                            </div>
+                                            <div class="column col-2">
+                                                <small id="sensor-z-min-max" class="tile-subtitle text-gray">______<br>______</small>
+                                            </div>
+                                        </div>
+                                        <div class="columns">
+                                            <div class="column col-2">
+                                                <small class="tile-subtitle text-gray">&#916;X min:<br>&#916;X max:</small>
+                                            </div>
+                                            <div class="column col-2">
+                                                <small id="sensor-vx-min-max" class="tile-subtitle text-gray">______<br>______</small>
+                                            </div>
+                                            <div class="column col-2">
+                                                <small class="tile-subtitle text-gray">&#916;Y min:<br>&#916;Y max:</small>
+                                            </div>
+                                            <div class="column col-2">
+                                                <small id="sensor-vy-min-max" class="tile-subtitle text-gray">______<br>______</small>
+                                            </div>
+                                            <div class="column col-2">
+                                                <small class="tile-subtitle text-gray">&#916;Z min:<br>&#916;Z max:</small>
+                                            </div>
+                                            <div class="column col-2">
+                                                <small id="sensor-vz-min-max" class="tile-subtitle text-gray">______<br>______</small>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- END sensor data history -->
+                            </div>
+                        </div>
+
+                        <!-- START sensor data LIST -->
+
+                        <div class="panel">
+                            <div class="panel-header">
+                                <div class="panel-title bg-secondary p-1 h5">Sensor Data</div>
+                            </div>
+                            <div class="panel-body">
+                                <!-- START sensor data -->
+                                <div id="sensor-0" class="tile tile-centered">
+                                    <div class="tile-icon bg-secondary">
+                                        <div class="example-tile-icon text-bold bg-dark text-light p-1">#0</div>
+                                    </div>
+                                    <div class="tile-content">
+                                        <div class="columns">
+                                            <div class="column col-1">
+                                                <div class="tile-title">X</div>
+                                            </div>
+                                            <div class="column col-3">
+                                                <div id="sensor-0-x" class="tile-title">______</div>
+                                            </div>
+                                            <div class="column col-1">
+                                                <div class="tile-title">Y</div>
+                                            </div>
+                                            <div class="column col-3">
+                                                <div id="sensor-0-y" class="tile-title">______</div>
+                                            </div>
+                                            <div class="column col-1">
+                                                <div class="tile-title">Z</div>
+                                            </div>
+                                            <div class="column col-3">
+                                                <div id="sensor-0-z" class="tile-title">______</div>
+                                            </div>
+                                        </div>
+                                        <div class="columns">
+                                            <div class="column col-1">
+                                                <div class="tile-title" style="text-overflow: clip">&#916;X</div>
+                                            </div>
+                                            <div class="column col-3">
+                                                <div id="sensor-0-vx" class="tile-title">______</div>
+                                            </div>
+                                            <div class="column col-1">
+                                                <div class="tile-title" style="text-overflow: clip">&#916;Y</div>
+                                            </div>
+                                            <div class="column col-3">
+                                                <div id="sensor-0-vy" class="tile-title">______</div>
+                                            </div>
+                                            <div class="column col-1">
+                                                <div class="tile-title" style="text-overflow: clip">&#916;Z</div>
+                                            </div>
+                                            <div class="column col-3">
+                                                <div id="sensor-0-vz" class="tile-title">______</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- END sensor data -->
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <div class="column col-7">
+                        <div class="panel">
+                            <div class="panel-header">
+                                <div class="panel-title bg-secondary p-1 h5">Visualisation</div>
+                            </div>
+                            <div class="panel-body">
+
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
-    </main>
+    </div>
 
-    <script src="index.js" type="module"></script>
+
+<script src="index.js" type="module"></script>
 </body>
 </html>

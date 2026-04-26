@@ -2,14 +2,259 @@
 
 import {Ld6001Parser} from './ld6001-parser.js';
 
-const appElements = {
-    connectBtn: document.getElementById('connect-btn'),
-    portSelect: document.getElementById('port-select'),
-    targetsGroup: document.getElementById('targets-group'),
-    noDataInfo: document.getElementById('no-data-info'),
-    radarContainer: document.getElementById('radar-container'),
+class AppUI {
+
+    constructor() {
+        this.btnConnect = document.getElementById('btn-connect');
+        this.btnStart = document.getElementById('btn-start');
+        this.btnStop = document.getElementById('btn-stop');
+
+        this.txtSensor0 = document.getElementById("sensor-0");
+        this.txtSensor0X = document.getElementById("sensor-0-x");
+        this.txtSensor0Y = document.getElementById("sensor-0-y");
+        this.txtSensor0Z = document.getElementById("sensor-0-z");
+
+        this.txtSensor0VX = document.getElementById("sensor-0-vx");
+        this.txtSensor0VY = document.getElementById("sensor-0-vy");
+        this.txtSensor0VZ = document.getElementById("sensor-0-vz");
+
+        this.txtSensorXMinMax = document.getElementById("sensor-x-min-max");
+        this.txtSensorYMinMax = document.getElementById("sensor-y-min-max");
+        this.txtSensorZMinMax = document.getElementById("sensor-z-min-max");
+        this.txtSensorVXMinMax = document.getElementById("sensor-vx-min-max");
+        this.txtSensorVYMinMax = document.getElementById("sensor-vy-min-max");
+        this.txtSensorVZMinMax = document.getElementById("sensor-vz-min-max");
+
+        // View State
+        this.min_x = 0;
+        this.min_y = 0;
+        this.min_z = 0;
+        this.min_vx = 0;
+        this.min_vy = 0;
+        this.min_vz = 0;
+        this.max_x = 0;
+        this.max_y = 0;
+        this.max_z = 0;
+        this.max_vx = 0;
+        this.max_vy = 0;
+        this.max_vz = 0;
+        this.no_of_sensors = 0;
+    }
+
+    /**
+     * @param {SensorData[]} sensorDatas
+     */
+    async renderSensorData(sensorDatas) {
+        const mustUpdateSensorDataList = sensorDatas.length === this.no_of_sensors;
+        this.no_of_sensors = sensorDatas.length;
+        if (sensorDatas.length > 0) {
+            const update = function () {
+                if (mustUpdateSensorDataList) {
+                    this.show(this.txtSensor0); // makes odd blinking
+                }
+                this.txtSensor0X.innerText = sensorDatas[0].x.toFixed(3);
+                this.txtSensor0Y.innerText = sensorDatas[0].y.toFixed(3);
+                this.txtSensor0Z.innerText = sensorDatas[0].z.toFixed(3);
+                this.txtSensor0VX.innerText = sensorDatas[0].vx.toFixed(3);
+                this.txtSensor0VY.innerText = sensorDatas[0].vy.toFixed(3);
+                this.txtSensor0VZ.innerText = sensorDatas[0].vz.toFixed(3);
+
+                this.txtSensorXMinMax.innerHTML = `${this.min_x.toFixed(3)}<br>${this.max_x.toFixed(3)}`;
+                this.txtSensorYMinMax.innerHTML = `${this.min_y.toFixed(3)}<br>${this.max_y.toFixed(3)}`;
+                this.txtSensorZMinMax.innerHTML = `${this.min_z.toFixed(3)}<br>${this.max_z.toFixed(3)}`;
+                this.txtSensorVXMinMax.innerHTML = `${this.min_vx.toFixed(3)}<br>${this.max_vx.toFixed(3)}`;
+                this.txtSensorVYMinMax.innerHTML = `${this.min_vy.toFixed(3)}<br>${this.max_vy.toFixed(3)}`;
+                this.txtSensorVZMinMax.innerHTML = `${this.min_vz.toFixed(3)}<br>${this.max_vz.toFixed(3)}`;
+            }
+            this.min_x = Math.min(this.min_x, sensorDatas[0].x);
+            this.min_y = Math.min(this.min_y, sensorDatas[0].y);
+            this.min_z = Math.min(this.min_z, sensorDatas[0].z);
+            this.max_x = Math.max(this.max_x, sensorDatas[0].x);
+            this.max_y = Math.max(this.max_y, sensorDatas[0].y);
+            this.max_z = Math.max(this.max_z, sensorDatas[0].z);
+            this.min_vx = Math.min(this.min_vx, sensorDatas[0].vx);
+            this.min_vy = Math.min(this.min_vy, sensorDatas[0].vy);
+            this.min_vz = Math.min(this.min_vz, sensorDatas[0].vz);
+            this.max_vx = Math.max(this.max_vx, sensorDatas[0].vx);
+            this.max_vy = Math.max(this.max_vy, sensorDatas[0].vy);
+            this.max_vz = Math.max(this.max_vz, sensorDatas[0].vz);
+            requestAnimationFrame(update.bind(this));
+        } else {
+            this.hide(this.txtSensor0);
+        }
+    }
+
+    enableSensorActions() {
+        this.enable(this.btnStart);
+        this.enable(this.btnStop);
+    }
+
+    disableSensorActions() {
+        this.disable(this.btnStart);
+        this.disable(this.btnStop);
+    }
+
+    show(element) {
+        element.classList.add('d-none');
+    }
+
+    hide(element) {
+        element.classList.remove('d-none');
+    }
+
+    enable(element) {
+        element.classList.remove('disabled');
+    }
+
+    disable(element) {
+        element.classList.add('disabled');
+    }
 }
 
+export class ConnectorApp {
+    constructor() {
+        this.appUi = new AppUI();
+        this.parser = new Ld6001Parser();
+
+        this.port = null;
+        this.serialReader = null;
+        this.keepReading = true;
+
+        this.bindEvents();
+    }
+
+    bindEvents() {
+        this.appUi.btnConnect.addEventListener('click', () => {
+            if (this.port) {
+                this.disconnect();
+            } else {
+                this.connect();
+            }
+        });
+
+        this.appUi.btnStart.addEventListener('click', () => {
+            if (this.port) {
+                this.sendSerialCommand('AT+START\n');
+            }
+        });
+
+        this.appUi.btnStop.addEventListener('click', () => {
+            if (this.port) {
+                this.sendSerialCommand('AT+STOP\n');
+            }
+        });
+    }
+
+    async connect() {
+        if (!this.port) {
+            this.port = await navigator.serial.requestPort();
+        }
+        try {
+            await this.port.open({baudRate: 115200});   // FIXME: use baudrate from DropDown
+        } catch (error) {
+            console.error('Error connecting:', error);
+            alert('Could not connect to serial port: ' + error.message);
+        }
+        console.log('connected to ' + JSON.stringify(this.port.getInfo()));
+        await this.post_connect()
+        this.readLoop();
+    }
+
+    async disconnect() {
+        this.keepReading = false;
+        if (this.serialReader) {
+            await this.serialReader.cancel();
+        }
+        if (this.port) {
+            await this.port.close();
+            await this.port.forget(); // don't keep the permission for future connections
+            this.port = null;
+        }
+        await this.post_disconnect()
+        console.log('disconnected.');
+    }
+
+    async sendSerialCommand(command) {
+        if (!this.port || !this.port.writable) {
+            console.error('Port not writable');
+            return;
+        }
+        const encoder = new TextEncoder();
+        const writer = this.port.writable.getWriter();
+        try {
+            await writer.write(encoder.encode(command));
+            console.log(`Sent command: ${command.trim()}`);
+        } catch (error) {
+            console.error('Error sending command:', error);
+        } finally {
+            writer.releaseLock();
+        }
+    }
+
+    async readLoop() {
+        this.keepReading = true;
+        while (this.port.readable && this.keepReading) {
+            this.serialReader = this.port.readable.getReader();
+            try {
+                while (true) {
+                    const {value, done} = await this.serialReader.read();
+                    if (done) {
+                        break;
+                    }
+                    if (value) {
+                        // console.log('Received data:', value);
+                        // console.log('Received data (ASCII):', new TextDecoder().decode(value));
+                        if (this.parser) {
+                            const sensorDatas = this.parser.parse(value);
+                            this.appUi.renderSensorData(sensorDatas);
+
+                            // if (sensorDatas.length > 0) {
+                            // renderTargets(sensorDatas);
+                            // console.log('Detected targets:', sensorDatas.length);
+                            // for (const target of sensorDatas) {
+                            //     const distance = Math.sqrt(target.x ** 2 + target.y ** 2 + target.z ** 2);
+                            //     let id = [
+                            //         (target.objectId & 0xff000000) >> 24,
+                            //         (target.objectId & 0x00ff0000) >> 16,
+                            //         (target.objectId & 0x0000ff00) >> 8,
+                            //         (target.objectId & 0x000000ff),
+                            //     ]
+                            //     console.log(`Target ${id}, ${target.objectId}: x=${target.x.toFixed(2)}, y=${target.y.toFixed(2)}, z=${target.z.toFixed(2)}, dist=${distance.toFixed(2)}`);
+                        }
+                    }
+                }
+            } catch
+                (error) {
+                console.error('Read error:', error);
+            } finally {
+                this.serialReader.releaseLock();
+            }
+        }
+    }
+
+// --- Events --------------------------------------
+
+    async post_connect() {
+        const update = function () {
+            this.appUi.enableSensorActions();
+            this.appUi.btnConnect.textContent = 'Disconnect';
+            this.appUi.btnConnect.classList.remove('btn-primary');
+            this.appUi.btnConnect.classList.add('btn-error');
+        }
+        requestAnimationFrame(update.bind(this));
+    }
+
+    async post_disconnect() {
+        const update = function () {
+            this.appUi.disableSensorActions();
+            this.appUi.btnConnect.textContent = 'Connect';
+            this.appUi.btnConnect.classList.remove('btn-error');
+            this.appUi.btnConnect.classList.add('btn-primary');
+        }
+        requestAnimationFrame(update.bind(this));
+    }
+
+}
 
 const TARGET_COLORS = [
     '#5755d9', // Blue
@@ -23,154 +268,6 @@ const TARGET_COLORS = [
     '#00bcd4', // Cyan
     '#ff5722'  // Deep Orange
 ];
-
-let port;
-let reader;
-let keepReading = true;
-
-//# TODO fine tuning required
-let maxX = 12;
-let minX = -12;
-let maxY = 12;
-
-async function updatePortList() {
-    if (!('serial' in navigator)) {
-        return;
-    }
-    const ports = await navigator.serial.getPorts();
-    // Clear all except the first option
-    while (appElements.portSelect.options.length > 1) {
-        appElements.portSelect.remove(1);
-    }
-    ports.forEach((p, index) => {
-        const option = document.createElement('option');
-        option.text = `Port ${index + 1}`;
-        option.value = index;
-        appElements.portSelect.add(option);
-    });
-}
-
-async function connect() {
-    try {
-        if (!port) {
-            port = await navigator.serial.requestPort();
-        }
-
-        await port.open({baudRate: 115200});
-        console.log('Port opened');
-        appElements.connectBtn.textContent = 'Disconnect';
-        appElements.connectBtn.classList.remove('btn-primary');
-        appElements.connectBtn.classList.add('btn-error');
-
-        await initializeSensor();
-
-        readLoop();
-    } catch (error) {
-        console.error('Error connecting:', error);
-        alert('Could not connect to serial port: ' + error.message);
-    }
-}
-
-async function disconnect() {
-    keepReading = false;
-    if (reader) {
-        await reader.cancel();
-    }
-    if (port) {
-        await port.close();
-        // await port.forget(); // Keep the permission for future connections
-        port = null;
-    }
-    appElements.connectBtn.textContent = 'Connect';
-    appElements.connectBtn.classList.remove('btn-error');
-    appElements.connectBtn.classList.add('btn-primary');
-    console.log('Port closed');
-}
-
-async function sendSerialCommand(command) {
-    if (!port || !port.writable) {
-        console.error('Port not writable');
-        return;
-    }
-    const encoder = new TextEncoder();
-    const writer = port.writable.getWriter();
-    try {
-        await writer.write(encoder.encode(command));
-        console.log(`Sent command: ${command.trim()}`);
-    } catch (error) {
-        console.error('Error sending command:', error);
-    } finally {
-        writer.releaseLock();
-    }
-}
-
-async function initializeSensor() {
-    console.log('Initializing sensor...');
-    // The command is AT+DEBUG=3\n - where \n is a newline.
-    // await sendSerialCommand('AT+DEBUG=3\n');
-    await sendSerialCommand('AT+START\n');
-}
-
-async function readLoop() {
-    keepReading = true;
-    while (port.readable && keepReading) {
-        reader = port.readable.getReader();
-        appElements.radarContainer.classList.remove('d-none');
-        appElements.noDataInfo.classList.add('d-none');
-        try {
-            while (true) {
-                const {value, done} = await reader.read();
-                if (done) {
-                    break;
-                }
-                if (value) {
-                    // console.log('Received data:', value);
-                    // console.log('Received data (ASCII):', new TextDecoder().decode(value));
-                    if (parser) {
-                        const results = parser.parse(value);
-                        if (results.length > 0) {
-                            renderTargets(results);
-                            console.log('Detected targets:', results.length);
-                            for (const target of results) {
-                                const distance = Math.sqrt(target.x ** 2 + target.y ** 2 + target.z ** 2);
-                                let id = [
-                                    (target.objectId & 0xff000000) >> 24,
-                                    (target.objectId & 0x00ff0000) >> 16,
-                                    (target.objectId & 0x0000ff00) >> 8,
-                                    (target.objectId & 0x000000ff),
-                                ]
-                                console.log(`Target ${id}, ${target.objectId}: x=${target.x.toFixed(2)}, y=${target.y.toFixed(2)}, z=${target.z.toFixed(2)}, dist=${distance.toFixed(2)}`);
-                            }
-                        } else {
-                            if (appElements.noDataInfo) appElements.noDataInfo.classList.remove('d-none');
-                            // clearTargets();
-                        }
-                    }
-                }
-            }
-        } catch (error) {
-            console.error('Read error:', error);
-        } finally {
-            reader.releaseLock();
-            // appElements.radarContainer.classList.add('d-none');
-            appElements.noDataInfo.classList.remove('d-none');
-        }
-    }
-}
-
-appElements.connectBtn.addEventListener('click', () => {
-    if (port && port.readable) {
-        disconnect();
-    } else {
-        connect();
-    }
-});
-
-function clearTargets() {
-    if (appElements.targetsGroup) {
-        appElements.targetsGroup.innerHTML = '';
-    }
-}
 
 function renderTargets(targets) {
     if (!appElements.targetsGroup) return;
@@ -236,24 +333,19 @@ function renderTargets(targets) {
     });
 }
 
-const parser = new Ld6001Parser();
-
-async function initAfterLoad() {
-    if ('serial' in navigator) {
-        updatePortList();
-        navigator.serial.addEventListener('connect', updatePortList);
-        navigator.serial.addEventListener('disconnect', updatePortList);
-    } else {
+/**
+ * @param {ConnectorApp} app
+ * @returns {Promise<void>}
+ */
+async function checkSerialIsAvailableInTheBrowser(app) {
+    if (!('serial' in navigator)) {
         const msg = 'Web Serial API not supported in this browser.';
         console.error(msg);
-        appElements.connectBtn.disabled = true;
-        appElements.portSelect.disabled = true;
-        const subtitle = document.querySelector('.empty-subtitle');
-        if (subtitle) subtitle.textContent = msg;
     }
 }
 
+const app = new ConnectorApp();
 window.addEventListener('load', () => {
-    initAfterLoad();
+    checkSerialIsAvailableInTheBrowser(app);
 });
 
