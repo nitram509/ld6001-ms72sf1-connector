@@ -23,6 +23,7 @@ class AppUI {
         this.btnConnect = document.getElementById('btn-connect');
         this.btnStart = document.getElementById('btn-start');
         this.btnStop = document.getElementById('btn-stop');
+        this.coordPointsLayer = document.getElementById('coord-points-layer');
 
         this.sensorElements = [];
         for (let i = 0; i < MAX_SENSOR_ELEMENTS; i++) {
@@ -88,6 +89,11 @@ class AppUI {
             this.max_vz = Math.max(this.max_vz, sd.vz);
         }
 
+        const maxMovement = Math.max(this.max_vx, this.max_vy, this.max_vz);
+        while (this.coordPointsLayer.hasChildNodes()) {
+            this.coordPointsLayer.removeChild(this.coordPointsLayer.firstChild);
+        }
+
         const mustUpdateSensorDataListLength = sensorDatas.length !== this.no_of_sensors;
         this.no_of_sensors = sensorDatas.length;
         const updateSensorDatas = function () {
@@ -105,6 +111,9 @@ class AppUI {
                     elem.vx.innerText = sd.vx.toFixed(3);
                     elem.vy.innerText = sd.vy.toFixed(3);
                     elem.vz.innerText = sd.vz.toFixed(3);
+
+                    const movement = Math.max(Math.abs(sd.x), Math.abs(sd.y), Math.abs(sd.z));
+                    drawCoordinateCircle(sd.x, sd.y, sd.z, TARGET_COLORS[i], movement / maxMovement);
                 } else {
                     if (mustUpdateSensorDataListLength) {
                         this.hide(elem.tile);
@@ -298,69 +307,69 @@ export class ConnectorApp {
 
 }
 
-function renderTargets(targets) {
-    if (!appElements.targetsGroup) return;
-
-    // Simple way: clear and redraw. For 3 objects, this is fine for performance.
-    appElements.targetsGroup.innerHTML = '';
-
-    let maxTargets = 3;
-
-    targets.forEach(target => {
-        // if (maxTargets <= 0) return;
-        // maxTargets--;
-
-        const color = TARGET_COLORS[target.objectId % TARGET_COLORS.length] || '#acb3be';
-        const g = document.createElementNS('http://www.w3.org/2000/svg', 'g');
-
-        if (target.x > 0) { // auto-detect min/max X
-            maxX = Math.max(maxX, target.x)
-        } else {
-            minX = Math.min(minX, target.x)
-        }
-        maxY = Math.max(maxY, Math.abs(target.y)); // auto-detect max Y
-
-        const screenHeight = 2000 - 100;
-        const screenWidth = 1000 - 100;
-
-        let renderX = 0;
-        if (target.x > 0) {
-            // invert x to match the radar's coordinate system'
-            renderX = -1 * target.x * screenWidth / maxX;
-        } else {
-            renderX = target.x * screenWidth / minX;
-        }
-        const renderY = target.y * screenHeight / maxY;
-
-
-        const dot = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
-        dot.setAttribute('cx', renderX);
-        dot.setAttribute('cy', renderY);
-        dot.setAttribute('r', '40');
-        dot.setAttribute('fill', color);
-        dot.classList.add('person-dot');
-
-        // Speed-based glow effect
-        // Speed in the new protocol is represented by vx, vy, vz components (m/s).
-        const speed = Math.sqrt(target.vx ** 2 + target.vy ** 2 + target.vz ** 2);
-
-        dot.classList.add('glow');
-        const glowIntensity = Math.min(speed * 10, 50); // Scale for visual effect
-        dot.style.filter = `drop-shadow(0 0 ${glowIntensity}px ${color})`;
-
-        const label = document.createElementNS('http://www.w3.org/2000/svg', 'text');
-        label.setAttribute('x', renderX);
-        label.setAttribute('y', renderY + 80);
-        label.setAttribute('text-anchor', 'middle');
-        label.setAttribute('class', 'person-label');
-        const distance = Math.sqrt(target.x ** 2 + target.y ** 2 + target.z ** 2);
-        label.textContent = `#${target.objectId} | ${distance.toFixed(2)}m | x=${target.x.toFixed(2)} | y=${target.y.toFixed(2)} | z=${target.z.toFixed(2)}`;
-
-        g.appendChild(dot);
-        g.appendChild(label);
-        appElements.targetsGroup.appendChild(g);
-    });
-}
+// function renderTargets(targets) {
+//     if (!appElements.targetsGroup) return;
+//
+//     // Simple way: clear and redraw. For 3 objects, this is fine for performance.
+//     appElements.targetsGroup.innerHTML = '';
+//
+//     let maxTargets = 3;
+//
+//     targets.forEach(target => {
+//         // if (maxTargets <= 0) return;
+//         // maxTargets--;
+//
+//         const color = TARGET_COLORS[target.objectId % TARGET_COLORS.length] || '#acb3be';
+//         const g = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+//
+//         if (target.x > 0) { // auto-detect min/max X
+//             maxX = Math.max(maxX, target.x)
+//         } else {
+//             minX = Math.min(minX, target.x)
+//         }
+//         maxY = Math.max(maxY, Math.abs(target.y)); // auto-detect max Y
+//
+//         const screenHeight = 2000 - 100;
+//         const screenWidth = 1000 - 100;
+//
+//         let renderX = 0;
+//         if (target.x > 0) {
+//             // invert x to match the radar's coordinate system'
+//             renderX = -1 * target.x * screenWidth / maxX;
+//         } else {
+//             renderX = target.x * screenWidth / minX;
+//         }
+//         const renderY = target.y * screenHeight / maxY;
+//
+//
+//         const dot = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+//         dot.setAttribute('cx', renderX);
+//         dot.setAttribute('cy', renderY);
+//         dot.setAttribute('r', '40');
+//         dot.setAttribute('fill', color);
+//         dot.classList.add('person-dot');
+//
+//         // Speed-based glow effect
+//         // Speed in the new protocol is represented by vx, vy, vz components (m/s).
+//         const speed = Math.sqrt(target.vx ** 2 + target.vy ** 2 + target.vz ** 2);
+//
+//         dot.classList.add('glow');
+//         const glowIntensity = Math.min(speed * 10, 50); // Scale for visual effect
+//         dot.style.filter = `drop-shadow(0 0 ${glowIntensity}px ${color})`;
+//
+//         const label = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+//         label.setAttribute('x', renderX);
+//         label.setAttribute('y', renderY + 80);
+//         label.setAttribute('text-anchor', 'middle');
+//         label.setAttribute('class', 'person-label');
+//         const distance = Math.sqrt(target.x ** 2 + target.y ** 2 + target.z ** 2);
+//         label.textContent = `#${target.objectId} | ${distance.toFixed(2)}m | x=${target.x.toFixed(2)} | y=${target.y.toFixed(2)} | z=${target.z.toFixed(2)}`;
+//
+//         g.appendChild(dot);
+//         g.appendChild(label);
+//         appElements.targetsGroup.appendChild(g);
+//     });
+// }
 
 /**
  * @param {ConnectorApp} app
@@ -371,6 +380,68 @@ async function checkSerialIsAvailableInTheBrowser(app) {
         const msg = 'Web Serial API not supported in this browser.';
         console.error(msg);
     }
+}
+
+/**
+ * Draws a circle in the 3D coordinate cube projected onto the existing SVG.
+ *
+ * Input ranges:
+ * x: -5..5, y: -2..2, z: 0..20
+ *
+ * @param {number} x
+ * @param {number} y
+ * @param {number} z
+ * @param {string} color
+ * @param {number} glowFactor 0..1
+ */
+function drawCoordinateCircle(x, y, z, color, glowFactor) {
+    const pointsLayer = document.getElementById('coord-points-layer');
+    if (!pointsLayer) {
+        return;
+    }
+
+    const clamp = (value, min, max) => Math.min(max, Math.max(min, value));
+
+    const clampedX = clamp(x, -5, 5);
+    const clampedY = clamp(y, -2, 2);
+    const clampedZ = clamp(z, 0, 20);
+    const clampedGlow = clamp(glowFactor, 0, 1);
+
+    const originX = 210;
+    const originY = 95;
+
+    // Projection vectors derived from the currently drawn cube.
+    const xAxisHalfRangeVec = {x: 225, y: 0};     // x=-5..5 spans the back wall width
+    const yAxisHalfRangeVec = {x: 0, y: -135};    // y=-2..2 spans the back wall height
+    const zAxisFullRangeVec = {x: -120, y: 105};  // z=0..20 spans from back wall center to front wall center
+
+    const normalizedX = clampedX / 5;
+    const normalizedY = clampedY / 2;
+    const normalizedZ = clampedZ / 20;
+
+    const projectedX = originX
+        + normalizedX * xAxisHalfRangeVec.x
+        + normalizedY * yAxisHalfRangeVec.x
+        + normalizedZ * zAxisFullRangeVec.x;
+    const projectedY = originY
+        + normalizedX * xAxisHalfRangeVec.y
+        + normalizedY * yAxisHalfRangeVec.y
+        + normalizedZ * zAxisFullRangeVec.y;
+
+    const circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+    circle.setAttribute('cx', projectedX.toString());
+    circle.setAttribute('cy', projectedY.toString());
+    circle.setAttribute('r', '10'); // 5px diameter
+    circle.setAttribute('fill', color);
+    if (glowFactor > 0.666) {
+        circle.setAttribute('filter', 'url(#glow-100)');
+    } else if (glowFactor > 0.333) {
+        circle.setAttribute('filter', 'url(#glow-66)');
+    } else if (glowFactor > 0.05) {
+        circle.setAttribute('filter', 'url(#glow-33)');
+    }
+
+    pointsLayer.appendChild(circle);
 }
 
 const app = new ConnectorApp();

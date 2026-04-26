@@ -4,6 +4,21 @@
     <meta charset="UTF-8">
     <title>LD2450-Connector Radar UI</title>
     <link rel="stylesheet" href="spectre.min.css">
+    <style>
+        .coord-system {
+            width: 100%;
+            background: #f8f9fa;
+            border: 1px solid #dcdfe3;
+            border-radius: 6px;
+            padding: 12px;
+        }
+
+        .coord-system svg {
+            display: block;
+            width: 100%;
+            height: auto;
+        }
+    </style>
 </head>
 <body>
 
@@ -104,13 +119,13 @@
                                             <small id="sensor-x-min-max" class="tile-subtitle text-gray">______<br>______</small>
                                         </div>
                                         <div class="column col-2">
-                                            <small class="tile-subtitle text-gray">X min:<br>X max:</small>
+                                            <small class="tile-subtitle text-gray">Y min:<br>Y max:</small>
                                         </div>
                                         <div class="column col-2">
                                             <small id="sensor-y-min-max" class="tile-subtitle text-gray">______<br>______</small>
                                         </div>
                                         <div class="column col-2">
-                                            <small class="tile-subtitle text-gray">X min:<br>X max:</small>
+                                            <small class="tile-subtitle text-gray">Z min:<br>Z max:</small>
                                         </div>
                                         <div class="column col-2">
                                             <small id="sensor-z-min-max" class="tile-subtitle text-gray">______<br>______</small>
@@ -663,7 +678,68 @@
                             <div class="panel-title bg-secondary p-1 h5">Visualisation</div>
                         </div>
                         <div class="panel-body">
+                            <div class="coord-system">
+                                <svg id="coord-system-svg" viewBox="-160 -60 620 420" role="img" aria-label="Three-dimensional coordinate system with X, Y and Z axes in a cube">
+                                    <defs>
+                                        <marker id="axis-arrow-x" markerWidth="3" markerHeight="3" refX="2.5" refY="1.5" orient="auto">
+                                            <path d="M0,0 L0,3 L2.5,1.5 z" fill="rgba(232, 86, 0, 0.5)"></path>
+                                        </marker>
+                                        <marker id="axis-arrow-y" markerWidth="3" markerHeight="3" refX="2.5" refY="1.5" orient="auto">
+                                            <path d="M0,0 L0,3 L2.5,1.5 z" fill="rgba(50, 182, 67, 0.5)"></path>
+                                        </marker>
+                                        <marker id="axis-arrow-z" markerWidth="3" markerHeight="3" refX="2.5" refY="1.5" orient="auto">
+                                            <path d="M0,0 L0,3 L2.5,1.5 z" fill="rgba(87, 85, 217, 0.5)"></path>
+                                        </marker>
+                                        <filter id="glow-100" x="-50%" y="-50%" width="500%" height="500%">
+                                            <feGaussianBlur in="SourceGraphic" stdDeviation="9" result="blur" />
+                                            <feMerge>
+                                                <feMergeNode in="blur" />
+                                                <feMergeNode in="SourceGraphic" />
+                                            </feMerge>
+                                        </filter>
+                                        <filter id="glow-66" x="-50%" y="-50%" width="500%" height="500%">
+                                            <feGaussianBlur in="SourceGraphic" stdDeviation="6" result="blur" />
+                                            <feMerge>
+                                                <feMergeNode in="blur" />
+                                                <feMergeNode in="SourceGraphic" />
+                                            </feMerge>
+                                        </filter>
+                                        <filter id="glow-33" x="-50%" y="-50%" width="500%" height="500%">
+                                            <feGaussianBlur in="SourceGraphic" stdDeviation="3" result="blur" />
+                                            <feMerge>
+                                                <feMergeNode in="blur" />
+                                                <feMergeNode in="SourceGraphic" />
+                                            </feMerge>
+                                        </filter>
+                                    </defs>
 
+
+                                    <line x1="-135" y1="335" x2="315" y2="335" stroke="rgba(80, 88, 98, 0.36)" stroke-width="0.8"></line>
+                                    <line x1="315" y1="335" x2="435" y2="230" stroke="rgba(80, 88, 98, 0.36)" stroke-width="0.8"></line>
+                                    <line x1="435" y1="230" x2="-15" y2="230" stroke="rgba(80, 88, 98, 0.36)" stroke-width="0.8"></line>
+                                    <line x1="-15" y1="230" x2="-135" y2="335" stroke="rgba(80, 88, 98, 0.36)" stroke-width="0.8"></line>
+                                    <line x1="-135" y1="335" x2="-135" y2="65" stroke="rgba(80, 88, 98, 0.36)" stroke-width="0.8"></line>
+                                    <line x1="315" y1="335" x2="315" y2="65" stroke="rgba(80, 88, 98, 0.36)" stroke-width="0.8"></line>
+                                    <line x1="435" y1="230" x2="435" y2="-40" stroke="rgba(80, 88, 98, 0.36)" stroke-width="0.8"></line>
+                                    <line x1="-15" y1="230" x2="-15" y2="-40" stroke="rgba(80, 88, 98, 0.36)" stroke-width="0.8"></line>
+                                    <line x1="-135" y1="65" x2="315" y2="65" stroke="rgba(80, 88, 98, 0.36)" stroke-width="0.8"></line>
+                                    <line x1="315" y1="65" x2="435" y2="-40" stroke="rgba(80, 88, 98, 0.36)" stroke-width="0.8"></line>
+                                    <line x1="435" y1="-40" x2="-15" y2="-40" stroke="rgba(80, 88, 98, 0.36)" stroke-width="0.8"></line>
+                                    <line x1="-15" y1="-40" x2="-135" y2="65" stroke="rgba(80, 88, 98, 0.36)" stroke-width="0.8"></line>
+
+                                    <ellipse cx="210" cy="95" rx="10" ry="6" fill="#ffffff" stroke="#000000" stroke-width="1"></ellipse>
+                                    <circle cx="210" cy="95" r="3" fill="#000000" filter="url(#dropShadow)"></circle>
+
+                                    <line x1="-15" y1="230" x2="400" y2="230" stroke="rgba(232, 86, 0, 0.5)" stroke-width="1.5" marker-end="url(#axis-arrow-x)"></line>
+                                    <line x1="-15" y1="230" x2="-15" y2="10" stroke="rgba(50, 182, 67, 0.5)" stroke-width="1.5" marker-end="url(#axis-arrow-y)"></line>
+                                    <line x1="-15" y1="230" x2="-105" y2="308" stroke="rgba(87, 85, 217, 0.5)" stroke-width="1.5" marker-end="url(#axis-arrow-z)"></line>
+
+                                    <text x="405" y="235" font-size="12" font-weight="bold" fill="rgba(232, 86, 0, 0.75)">X</text>
+                                    <text x="-20" y="5" font-size="12" font-weight="bold" fill="rgba(50, 182, 67, 0.75)">Y</text>
+                                    <text x="-117" y="317" font-size="12" font-weight="bold" fill="rgba(87, 85, 217, 0.75)">Z</text>
+                                    <g id="coord-points-layer"></g>
+                                </svg>
+                            </div>
                         </div>
                     </div>
                 </div>
