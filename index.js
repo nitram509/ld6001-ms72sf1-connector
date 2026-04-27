@@ -17,6 +17,9 @@ const TARGET_COLORS = [
     '#265e0f'  // dark green
 ];
 
+/**************************************************************************************************************
+ * Connector UI class
+ */
 class AppUI {
 
     constructor() {
@@ -178,6 +181,9 @@ class AppUI {
     }
 }
 
+/**************************************************************************************************************
+ * Connector application class
+ */
 export class ConnectorApp {
     constructor() {
         this.appUi = new AppUI();
