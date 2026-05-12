@@ -1,6 +1,6 @@
 'use strict';
 
-import {RingBuffer} from './ld6001-ringbuffer.js';
+import {RingBuffer} from './ringbuffer.js';
 
 const RX_HEADER = new Uint8Array([0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08]);
 const MAX_BUF_SIZE = 4096;

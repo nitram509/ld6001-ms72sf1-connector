@@ -27,5 +27,5 @@ node test-ld6001-parser.js
 ```shell
 esbuild --minify --loader=js < index.js > index.min.js 
 esbuild --minify --loader=js < ld6001-parser.js > ld6001-parser.min.js 
-esbuild --minify --loader=js < ld6001-ringbuffer.js > ld6001-ringbuffer.min.js 
+esbuild --minify --loader=js < ringbuffer.js > ld6001-ringbuffer.min.js 
 ```
