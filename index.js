@@ -23,6 +23,8 @@ const TARGET_COLORS = [
 class AppUI {
 
     constructor() {
+        this.btnDisplayVersion = document.getElementById('btn-display-version');
+        this.btnGetSensorData = document.getElementById('btn-get-sensor-data');
         this.btnConnect = document.getElementById('btn-connect');
         this.btnStart = document.getElementById('btn-start');
         this.btnStop = document.getElementById('btn-stop');
@@ -181,6 +183,22 @@ class AppUI {
     }
 }
 
+/**
+ * Does LD6001 checksum calculation and sets the right sum into the data array
+ * @param data UInt8Array
+ */
+function calcChecksum(data) {
+    let sum = 0;
+    if (data.at(data.length - 1) !== 0x4b || data.at(0) !== 0x44) {
+        console.error("pre-flight check for checksum calculation failed: invalid data");
+        return;
+    }
+    for (let i = 0; i < data.length - 2; i++) {
+        sum = (sum + data.at(i)) % 256;
+    }
+    data[data.length - 2] = sum;
+}
+
 /**************************************************************************************************************
  * Connector application class
  */
@@ -205,16 +223,48 @@ export class ConnectorApp {
             }
         });
 
+        this.appUi.btnDisplayVersion.addEventListener('click', () => {
+            const cmd = new Uint8Array(
+                [0x44, // command
+                    0x11, // message ID
+                    0x00, // data length
+                    0x00, // reserved, 0x00
+                    0x00, // checksum, calculated later
+                    0x4b]);
+            calcChecksum(cmd);
+            this.sendSerialCommand(cmd);
+        });
+
+        this.appUi.btnGetSensorData.addEventListener('click', () => {
+            const cmd = new Uint8Array(
+                [0x44, // command
+                    0x62, // message ID
+                    0x08, // data length
+                    0x00, // reserved, 0x00
+                    0x10, // sensitivity (1), Sensitivity attribute, 0x10 normal sensitivity, 0x20 high sensitivity
+                    0x00, // sensitivity (2), always 0
+                    0x00, // sensitivity (3), always 0
+                    0x00, // sensitivity (4), always 0
+                    0x00, // sensitivity (5), always 0
+                    0x00, // sensitivity (6), always 0
+                    0x00, // sensitivity (7), always 0
+                    0x00, // sensitivity (8), always 0
+                    0x00, // checksum, calculated later
+                    0x4b]);
+            calcChecksum(cmd);
+            this.sendSerialCommand(cmd);
+        });
+
         this.appUi.btnStart.addEventListener('click', () => {
-            if (this.port) {
-                this.sendSerialCommand('AT+START\n');
-            }
+            // if (this.port) {
+            //     this.sendSerialCommand('AT+START\n');
+            // }
         });
 
         this.appUi.btnStop.addEventListener('click', () => {
-            if (this.port) {
-                this.sendSerialCommand('AT+STOP\n');
-            }
+            // if (this.port) {
+            //     this.sendSerialCommand('AT+STOP\n');
+            // }
         });
         this.appUi.btnCloseHelp.addEventListener('click', () => {
             this.appUi.hide(this.appUi.modalHelp);
@@ -232,7 +282,7 @@ export class ConnectorApp {
             this.port = await navigator.serial.requestPort();
         }
         try {
-            await this.port.open({baudRate: 115200});   // FIXME: use baudrate from DropDown
+            await this.port.open({baudRate: 9600});   // FIXME: use baudrate from DropDown
         } catch (error) {
             console.error('Error connecting:', error);
             alert('Could not connect to serial port: ' + error.message);
@@ -264,8 +314,16 @@ export class ConnectorApp {
         const encoder = new TextEncoder();
         const writer = this.port.writable.getWriter();
         try {
-            await writer.write(encoder.encode(command));
-            console.log(`Sent command: ${command.trim()}`);
+            if (typeof command === 'string') {
+                const data = encoder.encode(command);
+                await writer.write(data);
+                console.log(`Sent command: ${command.trim()}`);
+            } else {
+                // assuming UInt8Array or similar
+                await writer.write(command);
+                const hex = Array.from(command, byte => byte.toString(16).padStart(2, '0')).join(' ');
+                console.log(`Sent command (hex): ${hex}`);
+            }
         } catch (error) {
             console.error('Error sending command:', error);
         } finally {
@@ -284,24 +342,48 @@ export class ConnectorApp {
                         break;
                     }
                     if (value) {
-                        // console.log('Received data:', value);
+                        console.log('Received data:', value);
+                        const id = value.at(12);
+                        const d = value.at(13);
+                        const pitch = value.at(14);
+                        const horiz = value.at(15);
+                        const x = value.at(18);
+                        const y = value.at(19);
+                        if (value.length > 21) {
+                            console.log(`Target ${id}: 
+                            d=${d}, 
+                            pitch=${pitch}, 
+                            horiz=${horiz},  
+                            x=${x},
+                            y=${y}`);
+                        }
                         // console.log('Received data (ASCII):', new TextDecoder().decode(value));
+                        //
+                        // 77,
+                        // 98,
+                        // 16,
+                        // 0,
+                        // 0,
+                        // 1,
+                        // 0,
+                        // 0,
+                        // 0,
+                        // 0,
+                        // 0,
+                        // 0,
+                        // 1,
+                        // 12,
+                        // 120,
+                        // 100,
+                        // 0,
+                        // 0,
+                        // 29,
+                        // 41,
+                        // 255
                         if (this.parser) {
                             const sensorDatas = this.parser.parse(value);
                             this.appUi.renderSensorData(sensorDatas);
-
-                            // if (sensorDatas.length > 0) {
-                            // renderTargets(sensorDatas);
-                            // console.log('Detected targets:', sensorDatas.length);
-                            // for (const target of sensorDatas) {
-                            //     const distance = Math.sqrt(target.x ** 2 + target.y ** 2 + target.z ** 2);
-                            //     let id = [
-                            //         (target.objectId & 0xff000000) >> 24,
-                            //         (target.objectId & 0x00ff0000) >> 16,
-                            //         (target.objectId & 0x0000ff00) >> 8,
-                            //         (target.objectId & 0x000000ff),
-                            //     ]
-                            //     console.log(`Target ${id}, ${target.objectId}: x=${target.x.toFixed(2)}, y=${target.y.toFixed(2)}, z=${target.z.toFixed(2)}, dist=${distance.toFixed(2)}`);
+                            // console.log(`Target ${id}, ${target.objectId}: x=${target.x.toFixed(2)}, y=${target.y.toFixed(2)}, z=${target.z.toFixed(2)}, dist=${distance.toFixed(2)}`);
                         }
                     }
                 }

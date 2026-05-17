@@ -1,4 +1,4 @@
-import {Ld6001Parser} from './ld6001-parser.js';
+import {Ld6001aParser} from './ld6001a-parser.js';
 
 function assert(condition, message) {
     if (!condition) {
@@ -6,8 +6,8 @@ function assert(condition, message) {
     }
 }
 
-function testLd6001Parser() {
-    const parser = new Ld6001Parser();
+function testLd6001aParser() {
+    const parser = new Ld6001aParser();
 
     // Bytes from "MS72SF1_Datesheet_K_EN_V.1.1.0.pdf"
     const bytes = new Uint8Array([
@@ -66,7 +66,7 @@ function testLd6001Parser() {
 }
 
 try {
-    testLd6001Parser();
+    testLd6001aParser();
     console.log('Example bytes test passed (check values above)!');
 } catch (e) {
     console.error('Test failed:', e);

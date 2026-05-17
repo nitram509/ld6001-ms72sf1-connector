@@ -19,13 +19,13 @@ Then you can access the web application by opening http://localhost:8000/index.h
 ### Run tests
 
 ```shell
-node test-ld6001-parser.js
+node test-ld6001a-parser.js
 ```
 
 ### Minify Javascript files
 
 ```shell
 esbuild --minify --loader=js < index.js > index.min.js 
-esbuild --minify --loader=js < ld6001-parser.js > ld6001-parser.min.js 
+esbuild --minify --loader=js < ld6001a-parser.js > ld6001-parser.min.js 
 esbuild --minify --loader=js < ringbuffer.js > ld6001-ringbuffer.min.js 
 ```
