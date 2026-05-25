@@ -31,13 +31,16 @@ export class RingBuffer {
     /**
      * Removes the first element from the buffer.
      * If the buffer is empty, this method does nothing.
+     * @param {number} noOfElements - Number of elements to remove from the front of the buffer. Default is 1.
      */
-    popFront() {
-        if (this.count === 0) {
-            return;
+    popFront(noOfElements = 1) {
+        for (let i = 0; i < noOfElements; i++) {
+            if (this.count === 0) {
+                return;
+            }
+            this.head = (this.head + 1) % (this.capacity + 1);
+            this.count--;
         }
-        this.head = (this.head + 1) % (this.capacity + 1);
-        this.count--;
     }
 
     /**

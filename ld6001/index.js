@@ -31,6 +31,12 @@ class AppUI {
         this.coordPointsLayer = document.getElementById('coord-points-layer');
         this.portSpeedSelect = document.getElementById('port-speed-select');
 
+        this.softwareMinorVersion = document.getElementById('softwareMinorVersion');
+        this.softwareMajorVersion = document.getElementById('softwareMajorVersion');
+        this.hardwareMinorVersion = document.getElementById('hardwareMinorVersion');
+        this.hardwareMajorVersion = document.getElementById('hardwareMajorVersion');
+        this.sensorStatus = document.getElementById('sensorStatus');
+
         this.modalHelp = document.getElementById('modal-help');
         this.btnCloseHelp = document.getElementById('btn-close-help');
         this.btnShowHelp = document.getElementById('btn-show-help');
@@ -184,21 +190,6 @@ class AppUI {
     }
 }
 
-/**
- * Does LD6001 checksum calculation and sets the right sum into the data array
- * @param data UInt8Array
- */
-function calcChecksum(data) {
-    let sum = 0;
-    if (data.at(data.length - 1) !== 0x4b || data.at(0) !== 0x44) {
-        console.error("pre-flight check for checksum calculation failed: invalid data");
-        return;
-    }
-    for (let i = 0; i < data.length - 2; i++) {
-        sum = (sum + data.at(i)) % 256;
-    }
-    data[data.length - 2] = sum;
-}
 
 /**************************************************************************************************************
  * Connector application class
@@ -206,13 +197,24 @@ function calcChecksum(data) {
 export class ConnectorApp {
     constructor() {
         this.appUi = new AppUI();
-        this.parser = new Ld6001Parser();
+        this.parser = new Ld6001Parser(null, this.onVersionReceived.bind(this));
 
         this.port = null;
         this.serialReader = null;
         this.keepReading = true;
 
         this.bindEvents();
+    }
+
+    /**
+     * @param {SensorVersion} sensorVersion
+     */
+    onVersionReceived(sensorVersion) {
+        this.appUi.hardwareMajorVersion.innerText = sensorVersion.hardwareMajorVersion.toString();
+        this.appUi.hardwareMinorVersion.innerText = sensorVersion.hardwareMinorVersion.toString();
+        this.appUi.softwareMajorVersion.innerText = sensorVersion.softwareMajorVersion.toString();
+        this.appUi.softwareMinorVersion.innerText = sensorVersion.softwareMinorVersion.toString();
+        this.appUi.sensorStatus.innerText = sensorVersion.sensorStatus.toString();
     }
 
     bindEvents() {
@@ -232,7 +234,7 @@ export class ConnectorApp {
                     0x00, // reserved, 0x00
                     0x00, // checksum, calculated later
                     0x4b]);
-            calcChecksum(cmd);
+            this.parser.calculateAndSetChecksum(cmd);
             this.sendSerialCommand(cmd);
         });
 
@@ -362,29 +364,6 @@ export class ConnectorApp {
                             x=${x},
                             y=${y}`);
                         }
-                        // console.log('Received data (ASCII):', new TextDecoder().decode(value));
-                        //
-                        // 77,
-                        // 98,
-                        // 16,
-                        // 0,
-                        // 0,
-                        // 1,
-                        // 0,
-                        // 0,
-                        // 0,
-                        // 0,
-                        // 0,
-                        // 0,
-                        // 1,
-                        // 12,
-                        // 120,
-                        // 100,
-                        // 0,
-                        // 0,
-                        // 29,
-                        // 41,
-                        // 255
                         if (this.parser) {
                             const sensorDatas = this.parser.parse(value);
                             this.appUi.renderSensorData(sensorDatas);

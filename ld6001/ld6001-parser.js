@@ -4,6 +4,7 @@ import {RingBuffer} from './ringbuffer.js';
 
 const RX_HEADER = new Uint8Array([0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08]);
 const MAX_BUF_SIZE = 4096;
+const RX_VERSION_SIZE = 14;
 
 /**
  * @param {RingBuffer} ringBuffer
@@ -51,7 +52,7 @@ function bytesToFloat32(ringBuffer, offset) {
  * @property {number} softwareMajorVersion
  * @property {number} hardwareMinorVersion
  * @property {number} hardwareMajorVersion
- * @property {number} sensorStatus current working status, 0 = initialization status, 1 = initializing
+ * @property {number} sensorStatus current working status, 0 = initialization completed, 1 = initializing
  */
 
 /**
@@ -82,8 +83,15 @@ function bytes2SensorData(ringBuffer, offset) {
 }
 
 export class Ld6001Parser {
-    constructor() {
+
+    /**
+     * @param {function(SensorData[])} onDataReceived callback function to be called when new data is received
+     * @param {function(SensorVersion)} onVersionReceived callback function to be called when version information is received
+     */
+    constructor(onDataReceived, onVersionReceived) {
         this.buffer = new RingBuffer(MAX_BUF_SIZE);
+        this.onDataReceived = onDataReceived;
+        this.onVersionReceived = onVersionReceived;
     }
 
     /**
@@ -97,45 +105,26 @@ export class Ld6001Parser {
 
         const detectedObjects = [];
 
-        while (this.buffer.size() >= RX_HEADER.length + 4) {
-            // Data fields breakdown:
-            // HEAD (8 bytes)                - Offset 0
-            // LENGTH (4 bytes)              - Offset 8
-            // FRAME_COUNT (4 bytes)         - Offset 12
-            // TLVs=1 (4 bytes)              - Offset 16
-            // POINT_LENGTH (4 bytes)        - Offset 20
-            // TLVs=2 (4 bytes)              - Offset 24
-            // TRACK_LENGTH (4 bytes)        - Offset 28
-            // Personnel_Data (N * 32 bytes) - Offset 32
-
+        while (this.buffer.size() >= Math.min(RX_VERSION_SIZE)) {
             // Check for header
-            let headerMatched = true;
-            for (let i = 0; i < RX_HEADER.length; i++) {
-                if (this.buffer.get(i) !== RX_HEADER[i]) {
-                    headerMatched = false;
-                    break;
-                }
-            }
+            let isVersionFrame =
+                this.buffer.get(0) === 0x4D &&
+                this.buffer.get(1) === 0x11 &&
+                this.buffer.get(2) === 0x08;
+                // checksum is broken on response ...
+                // I got [77, 17, 8, 0, 9, 1, 2, 1, 33, 0, 1, 16, 42, 233], which does not match the checksum
+                // this.buffer.get(RX_VERSION_SIZE - 2) === this.calculateChecksum(this.buffer, RX_VERSION_SIZE);
 
-            if (headerMatched) {
-                const frameLength = bytesToUint32(this.buffer, RX_HEADER.length);
-                if (this.buffer.size() < frameLength) {
-                    break; // Wait for more data
-                }
-
-                const trackLength = bytesToUint32(this.buffer, 28);
-                const numPersons = trackLength / 32;
-                let offset = 32;
-
-                for (let i = 0; i < numPersons; i++) {
-                    const sd = bytes2SensorData(this.buffer, offset);
-                    detectedObjects.push(sd);
-                    offset += 32;
-                }
-
-                for (let i = 0; i < frameLength; i++) {
-                    this.buffer.popFront();
-                }
+            if (isVersionFrame) {
+                const v = {
+                    softwareMinorVersion: this.buffer.get(4),
+                    softwareMajorVersion: this.buffer.get(5),
+                    hardwareMinorVersion: this.buffer.get(6),
+                    hardwareMajorVersion: this.buffer.get(7),
+                    sensorStatus: this.buffer.get(9),
+                };
+                this.buffer.popFront(RX_VERSION_SIZE);
+                this.onVersionReceived(v);
             } else {
                 this.buffer.popFront();
             }
@@ -145,11 +134,45 @@ export class Ld6001Parser {
     }
 
     /**
+     * Does LD6001 checksum calculation and sets the right sum into the data array
+     * @param {Uint8Array} data
+     */
+    calculateAndSetChecksum(data) {
+        data[data.length - 2] = this.calculateChecksum(data, data.length);
+    }
+
+    /**
+     * Does LD6001 checksum calculation
+     * @param {Uint8Array, RingBuffer} data
+     * @param {number} length length of the data frame, including checksum byte itselt + post-amble (mean incl. last two bytes)
+     * @returns {number}
+     */
+    calculateChecksum(data, length) {
+        let sum = 0;
+        if (data instanceof Uint8Array) {
+            if (length > data.length) {
+                throw new Error("`data.length` is shorter than expected length");
+            }
+            for (let i = 0; i < length - 2; i++) {
+                sum = (sum + data.at(i)) % 256;
+            }
+        } else {
+            if (length > data.size()) {
+                throw new Error("`data.size()` is shorter than expected length");
+            }
+            for (let i = 0; i < length - 2; i++) {
+                sum = (sum + data.get(i)) % 256;
+            }
+        }
+        return sum;
+    }
+
+    /**
      * @param bytes {Uint8Array}
      * @returns SensorVersion
      */
     parseVersion(bytes) {
-        if (bytes.length !== 14) {
+        if (bytes.length !== RX_VERSION_SIZE) {
             throw new Error("wrong paket length, expected 14, got " + bytes.length);
         }
         // TODO check pre-amble, and checksum

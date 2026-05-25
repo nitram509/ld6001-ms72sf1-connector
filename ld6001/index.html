@@ -61,10 +61,43 @@
                 <div class="panel-header">
                     <div class="panel-title bg-secondary p-1 h5">Information</div>
                 </div>
-                <div class="panel-body">
-                    <div class="form-group">
-                        <label class="form-label" for="btn-display-version">Version</label>
-                        <button id="btn-display-version" class="btn btn-primary">Display Version</button>
+                <div class="panel-body form-horizontal">
+                    <div class="container">
+                        <div class="columns">
+                            <div class="column col-3">
+                                <button id="btn-display-version" class="btn btn-primary">Read Version</button>
+                            </div>
+                        </div>
+                        <div class="columns">
+                            <div class="column col-6"><label>Hardware Version</label></div>
+                            <div class="column col-2">
+                                <div class="input-group">
+                                    <span class="input-group-addon input-sm" id="hardwareMajorVersion">?</span>
+                                    <span class="input-group-addon input-sm" id="hardwareMinorVersion">?</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="columns">
+                            <div class="column col-6"><label>Software Major Version</label></div>
+                            <div class="column col-2">
+                                <div class="input-group">
+                                    <span class="input-group-addon input-sm" id="softwareMajorVersion">?</span>
+                                    <span class="input-group-addon input-sm" id="softwareMinorVersion">?</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="columns">
+                            <div class="column col-6">
+                                <label>Sensor Status<br/>
+                                    <span style="font-style: italic">(0 = initialization completed,<br/>1 = initializing)</span>
+                                </label>
+                            </div>
+                            <div class="column col-2">
+                                <div class="input-group">
+                                    <span class="input-group-addon input-sm" id="sensorStatus">?</span>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
