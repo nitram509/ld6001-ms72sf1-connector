@@ -124,7 +124,9 @@ export class Ld6001Connector {
                     sensorStatus: this.buffer.get(9),
                 };
                 this.buffer.popFront(RX_VERSION_SIZE);
-                this.onVersionReceived(v);
+                if (this.onVersionReceived) {
+                    this.onVersionReceived(v);
+                }
             } else {
                 this.buffer.popFront();
             }
@@ -188,12 +190,36 @@ export class Ld6001Connector {
     /**
      * @returns {Uint8Array} command data to be sent
      */
-    getVersionCommand() {
+    createVersionCommand() {
         const data = new Uint8Array(
             [0x44, // command
                 0x11, // message ID
                 0x00, // data length
                 0x00, // reserved, 0x00
+                0x00, // checksum, calculated later
+                0x4b]);
+        this.calculateAndSetChecksum(data);
+        return data;
+    }
+
+    /**
+     * @param {boolean} highSensitivity - Whether to use high-sensitivity mode, default is false
+     * @returns {Uint8Array} command data to be sent
+     */
+    createSensorDataCommand(highSensitivity = false) {
+        const data = new Uint8Array(
+            [0x44, // command
+                0x62, // message ID
+                0x08, // data length
+                0x00, // reserved, 0x00
+                highSensitivity ? 0x20 : 0x10, // sensitivity (1), Sensitivity attribute, 0x10 normal sensitivity, 0x20 high sensitivity
+                highSensitivity ? 0x20 : 0x10, // sensitivity (2)
+                highSensitivity ? 0x20 : 0x10, // sensitivity (3)
+                highSensitivity ? 0x20 : 0x10, // sensitivity (4)
+                highSensitivity ? 0x20 : 0x10, // sensitivity (5)
+                highSensitivity ? 0x20 : 0x10, // sensitivity (6)
+                highSensitivity ? 0x20 : 0x10, // sensitivity (7)
+                highSensitivity ? 0x20 : 0x10, // sensitivity (8)
                 0x00, // checksum, calculated later
                 0x4b]);
         this.calculateAndSetChecksum(data);

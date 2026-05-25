@@ -25,6 +25,7 @@ class AppUI {
     constructor() {
         this.btnReadVersion = document.getElementById('btn-display-version');
         this.btnGetSensorData = document.getElementById('btn-get-sensor-data');
+        this.toggleHighSensitivity = document.getElementById('toggle-high-sensitiviy');
         this.btnConnect = document.getElementById('btn-connect');
         this.btnStart = document.getElementById('btn-start');
         this.btnStop = document.getElementById('btn-stop');
@@ -231,27 +232,13 @@ export class ConnectorApp {
         });
 
         this.appUi.btnReadVersion.addEventListener('click', () => {
-            const cmd = this.parser.getVersionCommand();
+            const cmd = this.parser.createVersionCommand();
             this.sendSerialCommand(cmd);
         });
 
         this.appUi.btnGetSensorData.addEventListener('click', () => {
-            const cmd = new Uint8Array(
-                [0x44, // command
-                    0x62, // message ID
-                    0x08, // data length
-                    0x00, // reserved, 0x00
-                    0x10, // sensitivity (1), Sensitivity attribute, 0x10 normal sensitivity, 0x20 high sensitivity
-                    0x00, // sensitivity (2), always 0
-                    0x00, // sensitivity (3), always 0
-                    0x00, // sensitivity (4), always 0
-                    0x00, // sensitivity (5), always 0
-                    0x00, // sensitivity (6), always 0
-                    0x00, // sensitivity (7), always 0
-                    0x00, // sensitivity (8), always 0
-                    0x00, // checksum, calculated later
-                    0x4b]);
-            calcChecksum(cmd);
+            const highSensitivity = true == this.appUi.toggleHighSensitivity.checked;
+            const cmd = this.parser.createSensorDataCommand(highSensitivity);
             this.sendSerialCommand(cmd);
         });
 
