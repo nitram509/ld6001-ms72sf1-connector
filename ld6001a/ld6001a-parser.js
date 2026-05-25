@@ -51,8 +51,8 @@ function bytesToFloat32(ringBuffer, offset) {
  * @returns {SensorData}
  */
 function bytes2SensorData(ringBuffer, offset) {
-    const id = bytesToUint32(ringBuffer, offset);
-    const q = bytesToUint32(ringBuffer, offset + 4);
+    const q = bytesToUint32(ringBuffer, offset); // reserved
+    const id = bytesToUint32(ringBuffer, offset + 4);
     const x = bytesToFloat32(ringBuffer, offset + 8);
     const y = bytesToFloat32(ringBuffer, offset + 12);
     const z = bytesToFloat32(ringBuffer, offset + 16);
