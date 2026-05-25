@@ -1,4 +1,4 @@
-import {Ld6001Parser} from "./ld6001-parser.js";
+import {Ld6001Connector} from "./ld6001-connector.js";
 
 function assert(condition, message) {
     if (!condition) {
@@ -8,7 +8,7 @@ function assert(condition, message) {
 
 function testLd6001GetVersion() {
     let sensorResponse = [77, 17, 8, 0, 9, 1, 2, 1, 33, 0, 1, 16, 42, 233]
-    let parser = new Ld6001Parser();
+    let parser = new Ld6001Connector();
     let actual = parser.parseVersion(sensorResponse);
 
     assert(actual.softwareMinorVersion === 9, `softwareMinorVersion mismatch"`);

@@ -82,7 +82,7 @@ function bytes2SensorData(ringBuffer, offset) {
     };
 }
 
-export class Ld6001Parser {
+export class Ld6001Connector {
 
     /**
      * @param {function(SensorData[])} onDataReceived callback function to be called when new data is received
@@ -111,9 +111,9 @@ export class Ld6001Parser {
                 this.buffer.get(0) === 0x4D &&
                 this.buffer.get(1) === 0x11 &&
                 this.buffer.get(2) === 0x08;
-                // checksum is broken on response ...
-                // I got [77, 17, 8, 0, 9, 1, 2, 1, 33, 0, 1, 16, 42, 233], which does not match the checksum
-                // this.buffer.get(RX_VERSION_SIZE - 2) === this.calculateChecksum(this.buffer, RX_VERSION_SIZE);
+            // checksum is broken on response ...
+            // I got [77, 17, 8, 0, 9, 1, 2, 1, 33, 0, 1, 16, 42, 233], which does not match the checksum
+            // this.buffer.get(RX_VERSION_SIZE - 2) === this.calculateChecksum(this.buffer, RX_VERSION_SIZE);
 
             if (isVersionFrame) {
                 const v = {
@@ -183,6 +183,21 @@ export class Ld6001Parser {
             hardwareMajorVersion: bytes[7],
             sensorStatus: bytes[9],
         }
+    }
+
+    /**
+     * @returns {Uint8Array} command data to be sent
+     */
+    getVersionCommand() {
+        const data = new Uint8Array(
+            [0x44, // command
+                0x11, // message ID
+                0x00, // data length
+                0x00, // reserved, 0x00
+                0x00, // checksum, calculated later
+                0x4b]);
+        this.calculateAndSetChecksum(data);
+        return data;
     }
 }
 

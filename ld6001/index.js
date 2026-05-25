@@ -1,6 +1,6 @@
 'use strict';
 
-import {Ld6001Parser} from './ld6001-parser.js';
+import {Ld6001Connector} from './ld6001-connector.js';
 
 const MAX_SENSOR_ELEMENTS = 10;
 
@@ -23,7 +23,7 @@ const TARGET_COLORS = [
 class AppUI {
 
     constructor() {
-        this.btnDisplayVersion = document.getElementById('btn-display-version');
+        this.btnReadVersion = document.getElementById('btn-display-version');
         this.btnGetSensorData = document.getElementById('btn-get-sensor-data');
         this.btnConnect = document.getElementById('btn-connect');
         this.btnStart = document.getElementById('btn-start');
@@ -166,11 +166,15 @@ class AppUI {
     enableSensorActions() {
         this.enable(this.btnStart);
         this.enable(this.btnStop);
+        this.enable(this.btnReadVersion)
+        this.enable(this.btnGetSensorData)
     }
 
     disableSensorActions() {
         this.disable(this.btnStart);
         this.disable(this.btnStop);
+        this.disable(this.btnReadVersion)
+        this.disable(this.btnGetSensorData)
     }
 
     show(element) {
@@ -197,7 +201,7 @@ class AppUI {
 export class ConnectorApp {
     constructor() {
         this.appUi = new AppUI();
-        this.parser = new Ld6001Parser(null, this.onVersionReceived.bind(this));
+        this.parser = new Ld6001Connector(null, this.onVersionReceived.bind(this));
 
         this.port = null;
         this.serialReader = null;
@@ -226,15 +230,8 @@ export class ConnectorApp {
             }
         });
 
-        this.appUi.btnDisplayVersion.addEventListener('click', () => {
-            const cmd = new Uint8Array(
-                [0x44, // command
-                    0x11, // message ID
-                    0x00, // data length
-                    0x00, // reserved, 0x00
-                    0x00, // checksum, calculated later
-                    0x4b]);
-            this.parser.calculateAndSetChecksum(cmd);
+        this.appUi.btnReadVersion.addEventListener('click', () => {
+            const cmd = this.parser.getVersionCommand();
             this.sendSerialCommand(cmd);
         });
 

@@ -19,7 +19,7 @@ Then you can access the web application by opening http://localhost:8000/index.h
 ### Run tests
 
 ```shell
-node test-ld6001-parser.js
+node test-ld6001-connector.js
 ```
 
 ### Minify Javascript files
