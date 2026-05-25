@@ -148,10 +148,10 @@ class AppUI {
         const updateSensorDataHistory = function () {
             this.txtSensorXMinMax.innerHTML = `${this.min_x.toFixed(3)}<br>${this.max_x.toFixed(3)}`;
             this.txtSensorYMinMax.innerHTML = `${this.min_y.toFixed(3)}<br>${this.max_y.toFixed(3)}`;
-            this.txtSensorZMinMax.innerHTML = `${this.min_z.toFixed(3)}<br>${this.max_z.toFixed(3)}`;
-            this.txtSensorVXMinMax.innerHTML = `${this.min_vx.toFixed(3)}<br>${this.max_vx.toFixed(3)}`;
-            this.txtSensorVYMinMax.innerHTML = `${this.min_vy.toFixed(3)}<br>${this.max_vy.toFixed(3)}`;
-            this.txtSensorVZMinMax.innerHTML = `${this.min_vz.toFixed(3)}<br>${this.max_vz.toFixed(3)}`;
+            this.txtSensorZMinMax.innerHTML = `${this.min_d.toFixed(3)}<br>${this.max_d.toFixed(3)}`;
+            this.txtSensorVXMinMax.innerHTML = `${this.min_dm.toFixed(3)}<br>${this.max_dm.toFixed(3)}`;
+            this.txtSensorVYMinMax.innerHTML = `${this.min_h.toFixed(3)}<br>${this.max_p.toFixed(3)}`;
+            this.txtSensorVZMinMax.innerHTML = `${this.min_p.toFixed(3)}<br>${this.max_h.toFixed(3)}`;
         }
         requestAnimationFrame(updateSensorDataHistory.bind(this));
     }

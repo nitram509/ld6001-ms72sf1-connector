@@ -118,13 +118,13 @@
                             </label>
                         </div>
                         <div class="col-3 col-sm-12">
-                            <label class="form-label" for="btn-get-sensor-data">Get sensor data</label>
+                            <label class="form-label" for="btn-get-sensor-data">Get sensor data (once)</label>
                         </div>
                         <div class="form-group col-9 col-sm-12">
-                            <button id="btn-get-sensor-data" class="btn btn-primary disabled">Get Sensor Data</button>
+                            <button id="btn-get-sensor-data" class="btn btn-primary disabled">Read</button>
                         </div>
                         <div class="col-3 col-sm-12">
-                            <label class="form-label" for="btn-start">Polling sensor data</label>
+                            <label class="form-label" for="btn-start">Polling sensor data (30ms)</label>
                         </div>
                         <div class="col-9 col-sm-12">
                             <button id="btn-start" class="btn btn-primary disabled">Start</button>
@@ -213,43 +213,43 @@
                                 </div>
                                 <div class="tile-content">
                                     <div class="columns">
-                                        <div class="column col-1">
-                                            <div class="tile-title">X</div>
+                                        <div class="column col-2">
+                                            <div class="tile-title">d</div>
                                         </div>
-                                        <div class="column col-3">
-                                            <div id="sensor-0-x" class="tile-title">______</div>
+                                        <div class="column col-2">
+                                            <div id="sensor-0-d" class="tile-title">______</div>
                                         </div>
-                                        <div class="column col-1">
-                                            <div class="tile-title">Y</div>
+                                        <div class="column col-2">
+                                            <div class="tile-title">pitch</div>
                                         </div>
-                                        <div class="column col-3">
-                                            <div id="sensor-0-y" class="tile-title">______</div>
+                                        <div class="column col-2">
+                                            <div id="sensor-0-p" class="tile-title">______</div>
                                         </div>
-                                        <div class="column col-1">
-                                            <div class="tile-title">Z</div>
+                                        <div class="column col-2">
+                                            <div class="tile-title">horiz</div>
                                         </div>
-                                        <div class="column col-3">
-                                            <div id="sensor-0-z" class="tile-title">______</div>
+                                        <div class="column col-2">
+                                            <div id="sensor-0-h" class="tile-title">______</div>
                                         </div>
                                     </div>
                                     <div class="columns">
-                                        <div class="column col-1">
-                                            <div class="tile-title" style="text-overflow: clip">&#916;X</div>
+                                        <div class="column col-2">
+                                            <div class="tile-title" style="text-overflow: clip">d (m)</div>
                                         </div>
-                                        <div class="column col-3">
-                                            <div id="sensor-0-vx" class="tile-title">______</div>
+                                        <div class="column col-2">
+                                            <div id="sensor-0-dm" class="tile-title">______</div>
                                         </div>
-                                        <div class="column col-1">
-                                            <div class="tile-title" style="text-overflow: clip">&#916;Y</div>
+                                        <div class="column col-2">
+                                            <div class="tile-title" style="text-overflow: clip">X</div>
                                         </div>
-                                        <div class="column col-3">
-                                            <div id="sensor-0-vy" class="tile-title">______</div>
+                                        <div class="column col-2">
+                                            <div id="sensor-0-x" class="tile-title">______</div>
                                         </div>
-                                        <div class="column col-1">
-                                            <div class="tile-title" style="text-overflow: clip">&#916;Z</div>
+                                        <div class="column col-2">
+                                            <div class="tile-title" style="text-overflow: clip">Y</div>
                                         </div>
-                                        <div class="column col-3">
-                                            <div id="sensor-0-vz" class="tile-title">______</div>
+                                        <div class="column col-2">
+                                            <div id="sensor-0-y" class="tile-title">______</div>
                                         </div>
                                     </div>
                                 </div>
@@ -263,43 +263,43 @@
                                 </div>
                                 <div class="tile-content">
                                     <div class="columns">
-                                        <div class="column col-1">
-                                            <div class="tile-title">X</div>
+                                        <div class="column col-2">
+                                            <div class="tile-title">d</div>
                                         </div>
-                                        <div class="column col-3">
-                                            <div id="sensor-1-x" class="tile-title">______</div>
+                                        <div class="column col-2">
+                                            <div id="sensor-1-d" class="tile-title">______</div>
                                         </div>
-                                        <div class="column col-1">
-                                            <div class="tile-title">Y</div>
+                                        <div class="column col-2">
+                                            <div class="tile-title">pitch</div>
                                         </div>
-                                        <div class="column col-3">
-                                            <div id="sensor-1-y" class="tile-title">______</div>
+                                        <div class="column col-2">
+                                            <div id="sensor-1-p" class="tile-title">______</div>
                                         </div>
-                                        <div class="column col-1">
-                                            <div class="tile-title">Z</div>
+                                        <div class="column col-2">
+                                            <div class="tile-title">horiz</div>
                                         </div>
-                                        <div class="column col-3">
-                                            <div id="sensor-1-z" class="tile-title">______</div>
+                                        <div class="column col-2">
+                                            <div id="sensor-1-h" class="tile-title">______</div>
                                         </div>
                                     </div>
                                     <div class="columns">
-                                        <div class="column col-1">
-                                            <div class="tile-title" style="text-overflow: clip">&#916;X</div>
+                                        <div class="column col-2">
+                                            <div class="tile-title" style="text-overflow: clip">d (m)</div>
                                         </div>
-                                        <div class="column col-3">
-                                            <div id="sensor-1-vx" class="tile-title">______</div>
+                                        <div class="column col-2">
+                                            <div id="sensor-1-dm" class="tile-title">______</div>
                                         </div>
-                                        <div class="column col-1">
-                                            <div class="tile-title" style="text-overflow: clip">&#916;Y</div>
+                                        <div class="column col-2">
+                                            <div class="tile-title" style="text-overflow: clip">X</div>
                                         </div>
-                                        <div class="column col-3">
-                                            <div id="sensor-1-vy" class="tile-title">______</div>
+                                        <div class="column col-2">
+                                            <div id="sensor-1-x" class="tile-title">______</div>
                                         </div>
-                                        <div class="column col-1">
-                                            <div class="tile-title" style="text-overflow: clip">&#916;Z</div>
+                                        <div class="column col-2">
+                                            <div class="tile-title" style="text-overflow: clip">Y</div>
                                         </div>
-                                        <div class="column col-3">
-                                            <div id="sensor-1-vz" class="tile-title">______</div>
+                                        <div class="column col-2">
+                                            <div id="sensor-1-y" class="tile-title">______</div>
                                         </div>
                                     </div>
                                 </div>
@@ -313,43 +313,43 @@
                                 </div>
                                 <div class="tile-content">
                                     <div class="columns">
-                                        <div class="column col-1">
-                                            <div class="tile-title">X</div>
+                                        <div class="column col-2">
+                                            <div class="tile-title">d</div>
                                         </div>
-                                        <div class="column col-3">
-                                            <div id="sensor-2-x" class="tile-title">______</div>
+                                        <div class="column col-2">
+                                            <div id="sensor-2-d" class="tile-title">______</div>
                                         </div>
-                                        <div class="column col-1">
-                                            <div class="tile-title">Y</div>
+                                        <div class="column col-2">
+                                            <div class="tile-title">pitch</div>
                                         </div>
-                                        <div class="column col-3">
-                                            <div id="sensor-2-y" class="tile-title">______</div>
+                                        <div class="column col-2">
+                                            <div id="sensor-2-p" class="tile-title">______</div>
                                         </div>
-                                        <div class="column col-1">
-                                            <div class="tile-title">Z</div>
+                                        <div class="column col-2">
+                                            <div class="tile-title">horiz</div>
                                         </div>
-                                        <div class="column col-3">
-                                            <div id="sensor-2-z" class="tile-title">______</div>
+                                        <div class="column col-2">
+                                            <div id="sensor-2-h" class="tile-title">______</div>
                                         </div>
                                     </div>
                                     <div class="columns">
-                                        <div class="column col-1">
-                                            <div class="tile-title" style="text-overflow: clip">&#916;X</div>
+                                        <div class="column col-2">
+                                            <div class="tile-title" style="text-overflow: clip">d (m)</div>
                                         </div>
-                                        <div class="column col-3">
-                                            <div id="sensor-2-vx" class="tile-title">______</div>
+                                        <div class="column col-2">
+                                            <div id="sensor-2-dm" class="tile-title">______</div>
                                         </div>
-                                        <div class="column col-1">
-                                            <div class="tile-title" style="text-overflow: clip">&#916;Y</div>
+                                        <div class="column col-2">
+                                            <div class="tile-title" style="text-overflow: clip">X</div>
                                         </div>
-                                        <div class="column col-3">
-                                            <div id="sensor-2-vy" class="tile-title">______</div>
+                                        <div class="column col-2">
+                                            <div id="sensor-2-x" class="tile-title">______</div>
                                         </div>
-                                        <div class="column col-1">
-                                            <div class="tile-title" style="text-overflow: clip">&#916;Z</div>
+                                        <div class="column col-2">
+                                            <div class="tile-title" style="text-overflow: clip">Y</div>
                                         </div>
-                                        <div class="column col-3">
-                                            <div id="sensor-2-vz" class="tile-title">______</div>
+                                        <div class="column col-2">
+                                            <div id="sensor-2-y" class="tile-title">______</div>
                                         </div>
                                     </div>
                                 </div>
@@ -363,43 +363,43 @@
                                 </div>
                                 <div class="tile-content">
                                     <div class="columns">
-                                        <div class="column col-1">
-                                            <div class="tile-title">X</div>
+                                        <div class="column col-2">
+                                            <div class="tile-title">d</div>
                                         </div>
-                                        <div class="column col-3">
-                                            <div id="sensor-3-x" class="tile-title">______</div>
+                                        <div class="column col-2">
+                                            <div id="sensor-3-d" class="tile-title">______</div>
                                         </div>
-                                        <div class="column col-1">
-                                            <div class="tile-title">Y</div>
+                                        <div class="column col-2">
+                                            <div class="tile-title">pitch</div>
                                         </div>
-                                        <div class="column col-3">
-                                            <div id="sensor-3-y" class="tile-title">______</div>
+                                        <div class="column col-2">
+                                            <div id="sensor-3-p" class="tile-title">______</div>
                                         </div>
-                                        <div class="column col-1">
-                                            <div class="tile-title">Z</div>
+                                        <div class="column col-2">
+                                            <div class="tile-title">horiz</div>
                                         </div>
-                                        <div class="column col-3">
-                                            <div id="sensor-3-z" class="tile-title">______</div>
+                                        <div class="column col-2">
+                                            <div id="sensor-3-h" class="tile-title">______</div>
                                         </div>
                                     </div>
                                     <div class="columns">
-                                        <div class="column col-1">
-                                            <div class="tile-title" style="text-overflow: clip">&#916;X</div>
+                                        <div class="column col-2">
+                                            <div class="tile-title" style="text-overflow: clip">d (m)</div>
                                         </div>
-                                        <div class="column col-3">
-                                            <div id="sensor-3-vx" class="tile-title">______</div>
+                                        <div class="column col-2">
+                                            <div id="sensor-3-dm" class="tile-title">______</div>
                                         </div>
-                                        <div class="column col-1">
-                                            <div class="tile-title" style="text-overflow: clip">&#916;Y</div>
+                                        <div class="column col-2">
+                                            <div class="tile-title" style="text-overflow: clip">X</div>
                                         </div>
-                                        <div class="column col-3">
-                                            <div id="sensor-3-vy" class="tile-title">______</div>
+                                        <div class="column col-2">
+                                            <div id="sensor-3-x" class="tile-title">______</div>
                                         </div>
-                                        <div class="column col-1">
-                                            <div class="tile-title" style="text-overflow: clip">&#916;Z</div>
+                                        <div class="column col-2">
+                                            <div class="tile-title" style="text-overflow: clip">Y</div>
                                         </div>
-                                        <div class="column col-3">
-                                            <div id="sensor-3-vz" class="tile-title">______</div>
+                                        <div class="column col-2">
+                                            <div id="sensor-3-y" class="tile-title">______</div>
                                         </div>
                                     </div>
                                 </div>
@@ -413,43 +413,43 @@
                                 </div>
                                 <div class="tile-content">
                                     <div class="columns">
-                                        <div class="column col-1">
-                                            <div class="tile-title">X</div>
+                                        <div class="column col-2">
+                                            <div class="tile-title">d</div>
                                         </div>
-                                        <div class="column col-3">
-                                            <div id="sensor-4-x" class="tile-title">______</div>
+                                        <div class="column col-2">
+                                            <div id="sensor-4-d" class="tile-title">______</div>
                                         </div>
-                                        <div class="column col-1">
-                                            <div class="tile-title">Y</div>
+                                        <div class="column col-2">
+                                            <div class="tile-title">pitch</div>
                                         </div>
-                                        <div class="column col-3">
-                                            <div id="sensor-4-y" class="tile-title">______</div>
+                                        <div class="column col-2">
+                                            <div id="sensor-4-p" class="tile-title">______</div>
                                         </div>
-                                        <div class="column col-1">
-                                            <div class="tile-title">Z</div>
+                                        <div class="column col-2">
+                                            <div class="tile-title">horiz</div>
                                         </div>
-                                        <div class="column col-3">
-                                            <div id="sensor-4-z" class="tile-title">______</div>
+                                        <div class="column col-2">
+                                            <div id="sensor-4-h" class="tile-title">______</div>
                                         </div>
                                     </div>
                                     <div class="columns">
-                                        <div class="column col-1">
-                                            <div class="tile-title" style="text-overflow: clip">&#916;X</div>
+                                        <div class="column col-2">
+                                            <div class="tile-title" style="text-overflow: clip">d (m)</div>
                                         </div>
-                                        <div class="column col-3">
-                                            <div id="sensor-4-vx" class="tile-title">______</div>
+                                        <div class="column col-2">
+                                            <div id="sensor-4-dm" class="tile-title">______</div>
                                         </div>
-                                        <div class="column col-1">
-                                            <div class="tile-title" style="text-overflow: clip">&#916;Y</div>
+                                        <div class="column col-2">
+                                            <div class="tile-title" style="text-overflow: clip">X</div>
                                         </div>
-                                        <div class="column col-3">
-                                            <div id="sensor-4-vy" class="tile-title">______</div>
+                                        <div class="column col-2">
+                                            <div id="sensor-4-x" class="tile-title">______</div>
                                         </div>
-                                        <div class="column col-1">
-                                            <div class="tile-title" style="text-overflow: clip">&#916;Z</div>
+                                        <div class="column col-2">
+                                            <div class="tile-title" style="text-overflow: clip">Y</div>
                                         </div>
-                                        <div class="column col-3">
-                                            <div id="sensor-4-vz" class="tile-title">______</div>
+                                        <div class="column col-2">
+                                            <div id="sensor-4-y" class="tile-title">______</div>
                                         </div>
                                     </div>
                                 </div>
@@ -463,43 +463,43 @@
                                 </div>
                                 <div class="tile-content">
                                     <div class="columns">
-                                        <div class="column col-1">
-                                            <div class="tile-title">X</div>
+                                        <div class="column col-2">
+                                            <div class="tile-title">d</div>
                                         </div>
-                                        <div class="column col-3">
-                                            <div id="sensor-5-x" class="tile-title">______</div>
+                                        <div class="column col-2">
+                                            <div id="sensor-5-d" class="tile-title">______</div>
                                         </div>
-                                        <div class="column col-1">
-                                            <div class="tile-title">Y</div>
+                                        <div class="column col-2">
+                                            <div class="tile-title">pitch</div>
                                         </div>
-                                        <div class="column col-3">
-                                            <div id="sensor-5-y" class="tile-title">______</div>
+                                        <div class="column col-2">
+                                            <div id="sensor-5-p" class="tile-title">______</div>
                                         </div>
-                                        <div class="column col-1">
-                                            <div class="tile-title">Z</div>
+                                        <div class="column col-2">
+                                            <div class="tile-title">horiz</div>
                                         </div>
-                                        <div class="column col-3">
-                                            <div id="sensor-5-z" class="tile-title">______</div>
+                                        <div class="column col-2">
+                                            <div id="sensor-5-h" class="tile-title">______</div>
                                         </div>
                                     </div>
                                     <div class="columns">
-                                        <div class="column col-1">
-                                            <div class="tile-title" style="text-overflow: clip">&#916;X</div>
+                                        <div class="column col-2">
+                                            <div class="tile-title" style="text-overflow: clip">d (m)</div>
                                         </div>
-                                        <div class="column col-3">
-                                            <div id="sensor-5-vx" class="tile-title">______</div>
+                                        <div class="column col-2">
+                                            <div id="sensor-5-dm" class="tile-title">______</div>
                                         </div>
-                                        <div class="column col-1">
-                                            <div class="tile-title" style="text-overflow: clip">&#916;Y</div>
+                                        <div class="column col-2">
+                                            <div class="tile-title" style="text-overflow: clip">X</div>
                                         </div>
-                                        <div class="column col-3">
-                                            <div id="sensor-5-vy" class="tile-title">______</div>
+                                        <div class="column col-2">
+                                            <div id="sensor-5-x" class="tile-title">______</div>
                                         </div>
-                                        <div class="column col-1">
-                                            <div class="tile-title" style="text-overflow: clip">&#916;Z</div>
+                                        <div class="column col-2">
+                                            <div class="tile-title" style="text-overflow: clip">Y</div>
                                         </div>
-                                        <div class="column col-3">
-                                            <div id="sensor-5-vz" class="tile-title">______</div>
+                                        <div class="column col-2">
+                                            <div id="sensor-5-y" class="tile-title">______</div>
                                         </div>
                                     </div>
                                 </div>
@@ -513,43 +513,43 @@
                                 </div>
                                 <div class="tile-content">
                                     <div class="columns">
-                                        <div class="column col-1">
-                                            <div class="tile-title">X</div>
+                                        <div class="column col-2">
+                                            <div class="tile-title">d</div>
                                         </div>
-                                        <div class="column col-3">
-                                            <div id="sensor-6-x" class="tile-title">______</div>
+                                        <div class="column col-2">
+                                            <div id="sensor-6-d" class="tile-title">______</div>
                                         </div>
-                                        <div class="column col-1">
-                                            <div class="tile-title">Y</div>
+                                        <div class="column col-2">
+                                            <div class="tile-tdtle">pitch</div>
                                         </div>
-                                        <div class="column col-3">
-                                            <div id="sensor-6-y" class="tile-title">______</div>
+                                        <div class="column col-2">
+                                            <div id="sensor-6-p" class="tile-title">______</div>
                                         </div>
-                                        <div class="column col-1">
-                                            <div class="tile-title">Z</div>
+                                        <div class="column col-2">
+                                            <div class="tile-title">horiz</div>
                                         </div>
-                                        <div class="column col-3">
-                                            <div id="sensor-6-z" class="tile-title">______</div>
+                                        <div class="column col-2">
+                                            <div id="sensor-6-h" class="tile-title">______</div>
                                         </div>
                                     </div>
                                     <div class="columns">
-                                        <div class="column col-1">
-                                            <div class="tile-title" style="text-overflow: clip">&#916;X</div>
+                                        <div class="column col-2">
+                                            <div class="tile-title" style="text-overflow: clip">d (m)</div>
                                         </div>
-                                        <div class="column col-3">
-                                            <div id="sensor-6-vx" class="tile-title">______</div>
+                                        <div class="column col-2">
+                                            <div id="sensor-6-dm" class="tile-title">______</div>
                                         </div>
-                                        <div class="column col-1">
-                                            <div class="tile-title" style="text-overflow: clip">&#916;Y</div>
+                                        <div class="column col-2">
+                                            <div class="tile-title" style="text-overflow: clip">X</div>
                                         </div>
-                                        <div class="column col-3">
-                                            <div id="sensor-6-vy" class="tile-title">______</div>
+                                        <div class="column col-2">
+                                            <div id="sensor-6-x" class="tile-title">______</div>
                                         </div>
-                                        <div class="column col-1">
-                                            <div class="tile-title" style="text-overflow: clip">&#916;Z</div>
+                                        <div class="column col-2">
+                                            <div class="tile-title" style="text-overflow: clip">Y</div>
                                         </div>
-                                        <div class="column col-3">
-                                            <div id="sensor-6-vz" class="tile-title">______</div>
+                                        <div class="column col-2">
+                                            <div id="sensor-6-y" class="tile-title">______</div>
                                         </div>
                                     </div>
                                 </div>
@@ -563,43 +563,43 @@
                                 </div>
                                 <div class="tile-content">
                                     <div class="columns">
-                                        <div class="column col-1">
-                                            <div class="tile-title">X</div>
+                                        <div class="column col-2">
+                                            <div class="tile-title">d</div>
                                         </div>
-                                        <div class="column col-3">
-                                            <div id="sensor-7-x" class="tile-title">______</div>
+                                        <div class="column col-2">
+                                            <div id="sensor-7-d" class="tile-title">______</div>
                                         </div>
-                                        <div class="column col-1">
-                                            <div class="tile-title">Y</div>
+                                        <div class="column col-2">
+                                            <div class="tile-title">pitch</div>
                                         </div>
-                                        <div class="column col-3">
-                                            <div id="sensor-7-y" class="tile-title">______</div>
+                                        <div class="column col-2">
+                                            <div id="sensor-7-p" class="tile-title">______</div>
                                         </div>
-                                        <div class="column col-1">
-                                            <div class="tile-title">Z</div>
+                                        <div class="column col-2">
+                                            <div class="tile-title">horiz</div>
                                         </div>
-                                        <div class="column col-3">
-                                            <div id="sensor-7-z" class="tile-title">______</div>
+                                        <div class="column col-2">
+                                            <div id="sensor-7-h" class="tile-title">______</div>
                                         </div>
                                     </div>
                                     <div class="columns">
-                                        <div class="column col-1">
-                                            <div class="tile-title" style="text-overflow: clip">&#916;X</div>
+                                        <div class="column col-2">
+                                            <div class="tile-title" style="text-overflow: clip">d (m)</div>
                                         </div>
-                                        <div class="column col-3">
-                                            <div id="sensor-7-vx" class="tile-title">______</div>
+                                        <div class="column col-2">
+                                            <div id="sensor-7-dm" class="tile-title">______</div>
                                         </div>
-                                        <div class="column col-1">
-                                            <div class="tile-title" style="text-overflow: clip">&#916;Y</div>
+                                        <div class="column col-2">
+                                            <div class="tile-title" style="text-overflow: clip">X</div>
                                         </div>
-                                        <div class="column col-3">
-                                            <div id="sensor-7-vy" class="tile-title">______</div>
+                                        <div class="column col-2">
+                                            <div id="sensor-7-x" class="tile-title">______</div>
                                         </div>
-                                        <div class="column col-1">
-                                            <div class="tile-title" style="text-overflow: clip">&#916;Z</div>
+                                        <div class="column col-2">
+                                            <div class="tile-title" style="text-overflow: clip">Y</div>
                                         </div>
-                                        <div class="column col-3">
-                                            <div id="sensor-7-vz" class="tile-title">______</div>
+                                        <div class="column col-2">
+                                            <div id="sensor-7-y" class="tile-title">______</div>
                                         </div>
                                     </div>
                                 </div>
@@ -613,43 +613,43 @@
                                 </div>
                                 <div class="tile-content">
                                     <div class="columns">
-                                        <div class="column col-1">
-                                            <div class="tile-title">X</div>
+                                        <div class="column col-2">
+                                            <div class="tile-title">d</div>
                                         </div>
-                                        <div class="column col-3">
-                                            <div id="sensor-8-x" class="tile-title">______</div>
+                                        <div class="column col-2">
+                                            <div id="sensor-8-d" class="tile-title">______</div>
                                         </div>
-                                        <div class="column col-1">
-                                            <div class="tile-title">Y</div>
+                                        <div class="column col-2">
+                                            <div class="tile-title">pitch</div>
                                         </div>
-                                        <div class="column col-3">
-                                            <div id="sensor-8-y" class="tile-title">______</div>
+                                        <div class="column col-2">
+                                            <div id="sensor-8-p" class="tile-title">______</div>
                                         </div>
-                                        <div class="column col-1">
-                                            <div class="tile-title">Z</div>
+                                        <div class="column col-2">
+                                            <div class="tile-title">horiz</div>
                                         </div>
-                                        <div class="column col-3">
-                                            <div id="sensor-8-z" class="tile-title">______</div>
+                                        <div class="column col-2">
+                                            <div id="sensor-8-h" class="tile-title">______</div>
                                         </div>
                                     </div>
                                     <div class="columns">
-                                        <div class="column col-1">
-                                            <div class="tile-title" style="text-overflow: clip">&#916;X</div>
+                                        <div class="column col-2">
+                                            <div class="tile-title" style="text-overflow: clip">d (m)</div>
                                         </div>
-                                        <div class="column col-3">
-                                            <div id="sensor-8-vx" class="tile-title">______</div>
+                                        <div class="column col-2">
+                                            <div id="sensor-8-dm" class="tile-title">______</div>
                                         </div>
-                                        <div class="column col-1">
-                                            <div class="tile-title" style="text-overflow: clip">&#916;Y</div>
+                                        <div class="column col-2">
+                                            <div class="tile-title" style="text-overflow: clip">X</div>
                                         </div>
-                                        <div class="column col-3">
-                                            <div id="sensor-8-vy" class="tile-title">______</div>
+                                        <div class="column col-2">
+                                            <div id="sensor-8-x" class="tile-title">______</div>
                                         </div>
-                                        <div class="column col-1">
-                                            <div class="tile-title" style="text-overflow: clip">&#916;Z</div>
+                                        <div class="column col-2">
+                                            <div class="tile-title" style="text-overflow: clip">Y</div>
                                         </div>
-                                        <div class="column col-3">
-                                            <div id="sensor-8-vz" class="tile-title">______</div>
+                                        <div class="column col-2">
+                                            <div id="sensor-8-y" class="tile-title">______</div>
                                         </div>
                                     </div>
                                 </div>
@@ -663,43 +663,43 @@
                                 </div>
                                 <div class="tile-content">
                                     <div class="columns">
-                                        <div class="column col-1">
-                                            <div class="tile-title">X</div>
+                                        <div class="column col-2">
+                                            <div class="tile-title">d</div>
                                         </div>
-                                        <div class="column col-3">
-                                            <div id="sensor-9-x" class="tile-title">______</div>
+                                        <div class="column col-2">
+                                            <div id="sensor-9-d" class="tile-title">______</div>
                                         </div>
-                                        <div class="column col-1">
-                                            <div class="tile-title">Y</div>
+                                        <div class="column col-2">
+                                            <div class="tile-title">pitch</div>
                                         </div>
-                                        <div class="column col-3">
-                                            <div id="sensor-9-y" class="tile-title">______</div>
+                                        <div class="column col-2">
+                                            <div id="sensor-9-p" class="tile-title">______</div>
                                         </div>
-                                        <div class="column col-1">
-                                            <div class="tile-title">Z</div>
+                                        <div class="column col-2">
+                                            <div class="tile-title">horiz</div>
                                         </div>
-                                        <div class="column col-3">
-                                            <div id="sensor-9-z" class="tile-title">______</div>
+                                        <div class="column col-2">
+                                            <div id="sensor-9-h" class="tile-title">______</div>
                                         </div>
                                     </div>
                                     <div class="columns">
-                                        <div class="column col-1">
-                                            <div class="tile-title" style="text-overflow: clip">&#916;X</div>
+                                        <div class="column col-2">
+                                            <div class="tile-title" style="text-overflow: clip">d (m)</div>
                                         </div>
-                                        <div class="column col-3">
-                                            <div id="sensor-9-vx" class="tile-title">______</div>
+                                        <div class="column col-2">
+                                            <div id="sensor-9-dm" class="tile-title">______</div>
                                         </div>
-                                        <div class="column col-1">
-                                            <div class="tile-title" style="text-overflow: clip">&#916;Y</div>
+                                        <div class="column col-2">
+                                            <div class="tile-title" style="text-overflow: clip">X</div>
                                         </div>
-                                        <div class="column col-3">
-                                            <div id="sensor-9-vy" class="tile-title">______</div>
+                                        <div class="column col-2">
+                                            <div id="sensor-9-x" class="tile-title">______</div>
                                         </div>
-                                        <div class="column col-1">
-                                            <div class="tile-title" style="text-overflow: clip">&#916;Z</div>
+                                        <div class="column col-2">
+                                            <div class="tile-title" style="text-overflow: clip">Y</div>
                                         </div>
-                                        <div class="column col-3">
-                                            <div id="sensor-9-vz" class="tile-title">______</div>
+                                        <div class="column col-2">
+                                            <div id="sensor-9-y" class="tile-title">______</div>
                                         </div>
                                     </div>
                                 </div>

@@ -50,17 +50,17 @@ class AppUI {
             this.sensorElements.push({
                 tile: tileElem,
                 divider: document.getElementById("sensor-divider-" + i),
+                d: document.getElementById("sensor-" + i + "-d"),
+                p: document.getElementById("sensor-" + i + "-p"),
+                h: document.getElementById("sensor-" + i + "-h"),
+                dm: document.getElementById("sensor-" + i + "-dm"),
                 x: document.getElementById("sensor-" + i + "-x"),
                 y: document.getElementById("sensor-" + i + "-y"),
-                z: document.getElementById("sensor-" + i + "-z"),
-                vx: document.getElementById("sensor-" + i + "-vx"),
-                vy: document.getElementById("sensor-" + i + "-vy"),
-                vz: document.getElementById("sensor-" + i + "-vz"),
             });
         }
 
         const hideAllSensorElements = function () {
-            for (let i = 0; i < MAX_SENSOR_ELEMENTS; i++) {
+            for (let i = 1; i < MAX_SENSOR_ELEMENTS; i++) {
                 this.hide(this.sensorElements[i].tile);
                 this.hide(this.sensorElements[i].divider);
             }
@@ -75,23 +75,23 @@ class AppUI {
         this.txtSensorVZMinMax = document.getElementById("sensor-vz-min-max");
 
         // View State
+        this.min_d = 0;
+        this.min_p = 0;
+        this.min_h = 0;
+        this.min_dm = 0;
         this.min_x = 0;
         this.min_y = 0;
-        this.min_z = 0;
-        this.min_vx = 0;
-        this.min_vy = 0;
-        this.min_vz = 0;
+        this.max_d = 0;
+        this.max_p = 0;
+        this.max_h = 0;
+        this.max_dm = 0;
         this.max_x = 0;
         this.max_y = 0;
-        this.max_z = 0;
-        this.max_vx = 0;
-        this.max_vy = 0;
-        this.max_vz = 0;
         this.no_of_sensors = 0;
     }
 
     /**
-     * @param {SensorData[]} sensorDatas
+     * @param {TargetData[]} sensorDatas
      */
     async renderSensorData(sensorDatas) {
         if (sensorDatas.length === 0) {
@@ -103,22 +103,18 @@ class AppUI {
             const sd = sensorDatas[i];
             this.min_x = Math.min(this.min_x, sd.x);
             this.min_y = Math.min(this.min_y, sd.y);
-            this.min_z = Math.min(this.min_z, sd.z);
+            this.min_d = Math.min(this.min_d, sd.d);
             this.max_x = Math.max(this.max_x, sd.x);
             this.max_y = Math.max(this.max_y, sd.y);
-            this.max_z = Math.max(this.max_z, sd.z);
-            this.min_vx = Math.min(this.min_vx, sd.vx);
-            this.min_vy = Math.min(this.min_vy, sd.vy);
-            this.min_vz = Math.min(this.min_vz, sd.vz);
-            this.max_vx = Math.max(this.max_vx, sd.vx);
-            this.max_vy = Math.max(this.max_vy, sd.vy);
-            this.max_vz = Math.max(this.max_vz, sd.vz);
+            this.max_d = Math.max(this.max_d, sd.d);
+            this.min_dm = Math.min(this.min_dm, sd.dm);
+            this.min_h = Math.min(this.min_h, sd.h);
+            this.min_p = Math.min(this.min_p, sd.p);
+            this.max_dm = Math.max(this.max_dm, sd.dm);
+            this.max_p = Math.max(this.max_p, sd.h);
+            this.max_h = Math.max(this.max_h, sd.p);
         }
 
-        const maxMovement = Math.max(
-            Math.abs(this.min_vx), Math.abs(this.min_vy), Math.abs(this.min_vz),
-            Math.abs(this.max_vx), Math.abs(this.max_vy), Math.abs(this.max_vz)
-        );
         while (this.coordPointsLayer.hasChildNodes()) {
             this.coordPointsLayer.removeChild(this.coordPointsLayer.firstChild);
         }
@@ -134,15 +130,14 @@ class AppUI {
                         this.show(elem.tile);
                         this.show(elem.divider);
                     }
-                    elem.x.innerText = sd.x.toFixed(3);
-                    elem.y.innerText = sd.y.toFixed(3);
-                    elem.z.innerText = sd.z.toFixed(3);
-                    elem.vx.innerText = sd.vx.toFixed(3);
-                    elem.vy.innerText = sd.vy.toFixed(3);
-                    elem.vz.innerText = sd.vz.toFixed(3);
+                    elem.d.innerText = sd.distance.toFixed(0);
+                    elem.p.innerText = sd.pitchAngle.toFixed(0);
+                    elem.h.innerText = sd.horizAngle.toFixed(0);
+                    elem.dm.innerText = sd.distanceInMeter.toFixed(3);
+                    elem.x.innerText = sd.x.toFixed(0);
+                    elem.y.innerText = sd.y.toFixed(0);
 
-                    const movement = Math.max(Math.abs(sd.vx), Math.abs(sd.vy), Math.abs(sd.vz));
-                    drawCoordinateCircle(sd.x, sd.y, sd.z, TARGET_COLORS[i], movement / maxMovement);
+                    drawCoordinateCircle(sd.x, sd.y, sd.distanceInMeter, TARGET_COLORS[i], 0.1);
                 } else {
                     if (mustUpdateSensorDataListLength) {
                         this.hide(elem.tile);
@@ -153,20 +148,20 @@ class AppUI {
         }
         requestAnimationFrame(updateSensorDatas.bind(this));
 
-        const updateSensorDataHistory = function () {
-            this.txtSensorXMinMax.innerHTML = `${this.min_x.toFixed(3)}<br>${this.max_x.toFixed(3)}`;
-            this.txtSensorYMinMax.innerHTML = `${this.min_y.toFixed(3)}<br>${this.max_y.toFixed(3)}`;
-            this.txtSensorZMinMax.innerHTML = `${this.min_z.toFixed(3)}<br>${this.max_z.toFixed(3)}`;
-            this.txtSensorVXMinMax.innerHTML = `${this.min_vx.toFixed(3)}<br>${this.max_vx.toFixed(3)}`;
-            this.txtSensorVYMinMax.innerHTML = `${this.min_vy.toFixed(3)}<br>${this.max_vy.toFixed(3)}`;
-            this.txtSensorVZMinMax.innerHTML = `${this.min_vz.toFixed(3)}<br>${this.max_vz.toFixed(3)}`;
-        }
-        requestAnimationFrame(updateSensorDataHistory.bind(this));
+        // const updateSensorDataHistory = function () {
+        //     this.txtSensorXMinMax.innerHTML = `${this.min_x.toFixed(3)}<br>${this.max_x.toFixed(3)}`;
+        //     this.txtSensorYMinMax.innerHTML = `${this.min_y.toFixed(3)}<br>${this.max_y.toFixed(3)}`;
+        //     this.txtSensorZMinMax.innerHTML = `${this.min_d.toFixed(3)}<br>${this.max_d.toFixed(3)}`;
+        //     this.txtSensorVXMinMax.innerHTML = `${this.min_dm.toFixed(3)}<br>${this.max_dm.toFixed(3)}`;
+        //     this.txtSensorVYMinMax.innerHTML = `${this.min_h.toFixed(3)}<br>${this.max_p.toFixed(3)}`;
+        //     this.txtSensorVZMinMax.innerHTML = `${this.min_p.toFixed(3)}<br>${this.max_h.toFixed(3)}`;
+        // }
+        // requestAnimationFrame(updateSensorDataHistory.bind(this));
     }
 
     enableSensorActions() {
         this.enable(this.btnStart);
-        this.enable(this.btnStop);
+        this.disable(this.btnStop); // we cant stop interval
         this.enable(this.btnReadVersion)
         this.enable(this.btnGetSensorData)
     }
@@ -202,7 +197,10 @@ class AppUI {
 export class ConnectorApp {
     constructor() {
         this.appUi = new AppUI();
-        this.parser = new Ld6001Connector(null, this.onVersionReceived.bind(this));
+        this.parser = new Ld6001Connector(
+            this.onDataReceived.bind(this),
+            this.onVersionReceived.bind(this)
+        );
 
         this.port = null;
         this.serialReader = null;
@@ -220,6 +218,24 @@ export class ConnectorApp {
         this.appUi.softwareMajorVersion.innerText = sensorVersion.softwareMajorVersion.toString();
         this.appUi.softwareMinorVersion.innerText = sensorVersion.softwareMinorVersion.toString();
         this.appUi.sensorStatus.innerText = sensorVersion.sensorStatus.toString();
+    }
+
+    /**
+     * @param {SensorDataResponse} sensorDataResponse
+     */
+    onDataReceived(sensorDataResponse) {
+        console.log(`Received sensor data: faultStatus=${sensorDataResponse.faultStatus}, noOfTargets=${sensorDataResponse.noOfTargets}`);
+        // for (let i = 0; i < sensorDataResponse.noOfTargets; i++) {
+        //     const t = sensorDataResponse.targets[i];
+        //     console.log(`Target ${i}:`);
+        //     console.log(`  Distance: ${t.distance}`);
+        //     console.log(`  Distance (m): ${t.distanceInMeter} m`);
+        //     console.log(`  horizAngle: ${t.horizAngle} horiz angle`);
+        //     console.log(`  pitchAngle: ${t.pitchAngle} pitch angle`);
+        //     console.log(`  x: ${t.x} x`);
+        //     console.log(`  y: ${t.y} y`);
+        // }
+        this.appUi.renderSensorData(sensorDataResponse.targets);
     }
 
     bindEvents() {
@@ -243,16 +259,25 @@ export class ConnectorApp {
         });
 
         this.appUi.btnStart.addEventListener('click', () => {
-            // if (this.port) {
-            //     this.sendSerialCommand('AT+START\n');
-            // }
+            function pollSensorData() {
+                const highSensitivity = true == this.appUi.toggleHighSensitivity.checked;
+                const cmd = this.parser.createSensorDataCommand(highSensitivity);
+                this.sendSerialCommand(cmd);
+            }
+            this.appUi.pollTimerId = setInterval(pollSensorData.bind(this), 30); // FIXME: make configurable
+            this.appUi.disable(this.appUi.btnStart);
+            this.appUi.enable(this.appUi.btnStop);
         });
 
         this.appUi.btnStop.addEventListener('click', () => {
-            // if (this.port) {
-            //     this.sendSerialCommand('AT+STOP\n');
-            // }
+            if (this.appUi.pollTimerId) {
+                clearTimeout(this.appUi.pollTimerId);
+                this.appUi.pollTimerId = null;
+            }
+            this.appUi.disable(this.appUi.btnStop);
+            this.appUi.enable(this.appUi.btnStart);
         });
+
         this.appUi.btnCloseHelp.addEventListener('click', () => {
             this.appUi.hide(this.appUi.modalHelp);
         });
@@ -279,6 +304,7 @@ export class ConnectorApp {
             alert('Could not connect to serial port: ' + error.message);
         }
         console.log('connected to ' + JSON.stringify(this.port.getInfo()) + ` ${baudRate} baud.`);
+        this.parser.reset();
         await this.post_connect()
         this.readLoop();
     }
@@ -308,12 +334,12 @@ export class ConnectorApp {
             if (typeof command === 'string') {
                 const data = encoder.encode(command);
                 await writer.write(data);
-                console.log(`Sent command: ${command.trim()}`);
+                // console.log(`Sent command: ${command.trim()}`);
             } else {
                 // assuming UInt8Array or similar
                 await writer.write(command);
                 const hex = Array.from(command, byte => byte.toString(16).padStart(2, '0')).join(' ');
-                console.log(`Sent command (hex): ${hex}`);
+                // console.log(`Sent command (hex): ${hex}`);
             }
         } catch (error) {
             console.error('Error sending command:', error);
@@ -334,24 +360,9 @@ export class ConnectorApp {
                     }
                     if (value) {
                         console.log('Received data:', value);
-                        const id = value.at(12);
-                        const d = value.at(13);
-                        const pitch = value.at(14);
-                        const horiz = value.at(15);
-                        const x = value.at(18);
-                        const y = value.at(19);
-                        if (value.length > 21) {
-                            console.log(`Target ${id}: 
-                            d=${d}, 
-                            pitch=${pitch}, 
-                            horiz=${horiz},  
-                            x=${x},
-                            y=${y}`);
-                        }
-                        if (this.parser) {
-                            const sensorDatas = this.parser.parse(value);
-                            this.appUi.renderSensorData(sensorDatas);
-                            // console.log(`Target ${id}, ${target.objectId}: x=${target.x.toFixed(2)}, y=${target.y.toFixed(2)}, z=${target.z.toFixed(2)}, dist=${distance.toFixed(2)}`);
+                        const complete = this.parser.parse(value); // will use callback handlers
+                        if (!complete) {
+                            console.log('Incomplete data received. Waiting for more.');
                         }
                     }
                 }

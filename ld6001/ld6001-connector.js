@@ -35,15 +35,14 @@ function bytesToFloat32(ringBuffer, offset) {
 }
 
 /**
- * @typedef {Object} SensorData
- * @property {number} objectId
- * @property {number} q
- * @property {number} x
- * @property {number} y
- * @property {number} z
- * @property {number} vx
- * @property {number} vy
- * @property {number} vz
+ * @typedef {Object} TargetData
+ * @property {number} targetId Target ID, unique ID for each target, 0~255
+ * @property {number} distance Target distance d (0.0-25.5m)
+ * @property {number} distanceInMeter Target distance in meter
+ * @property {number} pitchAngle Target pitch angle θ (0~180 degrees)
+ * @property {number} horizAngle Target horizontal angle ∂ (0~180 degrees)
+ * @property {number} x Target X coordinate value, signed char type, unit
+ * @property {number} y Target Y coordinate value, signed char type, unit
  */
 
 /**
@@ -56,36 +55,16 @@ function bytesToFloat32(ringBuffer, offset) {
  */
 
 /**
- * @param {RingBuffer} ringBuffer
- * @param {number} offset
- * @returns {SensorData}
+ * @typedef {Object} SensorDataResponse
+ * @property {number} noOfTargets The number of detected targets is M (the maximum value)
+ * @property {number} faultStatus Millimeter wave module fault status, 0 means no fault,
+ * @property {TargetData[]} targets individual target data information
  */
-function bytes2SensorData(ringBuffer, offset) {
-    const id = bytesToUint32(ringBuffer, offset);
-    const q = bytesToUint32(ringBuffer, offset + 4);
-    const x = bytesToFloat32(ringBuffer, offset + 8);
-    const y = bytesToFloat32(ringBuffer, offset + 12);
-    const z = bytesToFloat32(ringBuffer, offset + 16);
-    const vx = bytesToFloat32(ringBuffer, offset + 20);
-    const vy = bytesToFloat32(ringBuffer, offset + 24);
-    const vz = bytesToFloat32(ringBuffer, offset + 28);
-
-    return {
-        objectId: id,
-        q,
-        x,
-        y,
-        z,
-        vx,
-        vy,
-        vz
-    };
-}
 
 export class Ld6001Connector {
 
     /**
-     * @param {function(SensorData[])} onDataReceived callback function to be called when new data is received
+     * @param {function(SensorDataResponse)} onDataReceived callback function to be called when new data is received
      * @param {function(SensorVersion)} onVersionReceived callback function to be called when version information is received
      */
     constructor(onDataReceived, onVersionReceived) {
@@ -94,45 +73,121 @@ export class Ld6001Connector {
         this.onVersionReceived = onVersionReceived;
     }
 
+    reset() {
+        this.buffer.clear();
+    }
+
     /**
+     * Will use the callback functions provided in the constructor to handle data received from the sensor
      * @param {Uint8Array} data
-     * @returns {SensorData[]}
+     * @returns {boolean} true if data was complete frame, false when incomplete
      */
     parse(data) {
         for (let i = 0; i < data.length; i++) {
             this.buffer.push(data[i]);
         }
 
-        const detectedObjects = [];
+        console.log("buffer size: " + this.buffer.size());
 
-        while (this.buffer.size() >= Math.min(RX_VERSION_SIZE)) {
-            // Check for header
-            let isVersionFrame =
-                this.buffer.get(0) === 0x4D &&
-                this.buffer.get(1) === 0x11 &&
-                this.buffer.get(2) === 0x08;
-            // checksum is broken on response ...
-            // I got [77, 17, 8, 0, 9, 1, 2, 1, 33, 0, 1, 16, 42, 233], which does not match the checksum
-            // this.buffer.get(RX_VERSION_SIZE - 2) === this.calculateChecksum(this.buffer, RX_VERSION_SIZE);
+        let isSensorDataFrame =
+            this.buffer.size() >= 12 + 2 && // shortest possible frame with no targets
+            this.buffer.get(0) === 0x4D &&
+            this.buffer.get(1) === 0x62 &&
+            (this.buffer.get(2) % 8) === 0 &&
+            this.buffer.get(3) === 0;
 
-            if (isVersionFrame) {
-                const v = {
-                    softwareMinorVersion: this.buffer.get(4),
-                    softwareMajorVersion: this.buffer.get(5),
-                    hardwareMinorVersion: this.buffer.get(6),
-                    hardwareMajorVersion: this.buffer.get(7),
-                    sensorStatus: this.buffer.get(9),
+        if (isSensorDataFrame) {
+            const payloadLen = this.buffer.get(2);
+            const frameLen = 4 + payloadLen + 2;
+            isSensorDataFrame = isSensorDataFrame && frameLen <= this.buffer.size();
+            if (!isSensorDataFrame) {
+                console.log("frame length mismatch, expected min. " + frameLen + " , got " + this.buffer.size());
+                return false;
+            }
+
+            // TODO disabled, because does not work reliable = sensor sends crappy data
+            // const postAmble = this.buffer.get(frameLen - 1);
+            // isSensorDataFrame = isSensorDataFrame && postAmble === 0x4a; // post-amble
+            // if (!isSensorDataFrame) {
+            //     console.log("post-amble mismatch, expected 74 (0x4a) , got " + postAmble);
+            //     this.buffer.popFront(frameLen); // drop the mismatching frame
+            //     return false;
+            // }
+
+            // TODO disabled, because does not work reliable = sensor sends crappy data
+            // const checksumExpected = this.calculateChecksum(this.buffer, frameLen);
+            // const checksumActual = this.buffer.get(frameLen - 2);
+            // isSensorDataFrame = checksumExpected === checksumActual;
+            // if (!isSensorDataFrame) {
+            //     console.log("checksum mismatch, expected " + checksumExpected + ", got " + checksumActual);
+            //     return false
+            // }
+
+            const faultStatus = this.buffer.get(4);
+            const noOfTargets = this.buffer.get(5);
+            const targets = [];
+            for (let i = 0; i < noOfTargets; i++) {
+                // starting with byte offset 12, the first target begins
+                const targetId = this.buffer.get(12 + i * 8);
+                const distance = this.buffer.get(13 + i * 8);
+                const distanceInMeter = 3 / 4 * 25.5 * this.buffer.get(13 + i * 8) / 255; // magic figure 3/4 x 25.5m guessed by me
+                const pitchAngle = this.buffer.get(14 + i * 8);
+                const horizAngle = this.buffer.get(15 + i * 8);
+                const x = this.buffer.get(18 + i * 8);
+                const y = this.buffer.get(19 + i * 8);
+                targets.push({
+                    targetId,
+                    distance,
+                    distanceInMeter,
+                    pitchAngle,
+                    horizAngle,
+                    x,
+                    y,
+                })
+            }
+            this.buffer.popFront(frameLen);
+            if (this.onDataReceived) {
+                const sensorDataResponse = {
+                    noOfTargets,
+                    faultStatus,
+                    targets,
                 };
-                this.buffer.popFront(RX_VERSION_SIZE);
-                if (this.onVersionReceived) {
-                    this.onVersionReceived(v);
-                }
-            } else {
-                this.buffer.popFront();
+                this.onDataReceived(sensorDataResponse);
             }
         }
 
-        return detectedObjects;
+        let isVersionFrame =
+            this.buffer.get(0) === 0x4D &&
+            this.buffer.get(1) === 0x11 &&
+            this.buffer.get(2) === 0x08;
+        // checksum is broken on version response ...
+        // I got [77, 17, 8, 0, 9, 1, 2, 1, 33, 0, 1, 16, 42, 233], which does not match the checksum
+        // this.buffer.get(RX_VERSION_SIZE - 2) === this.calculateChecksum(this.buffer, RX_VERSION_SIZE);
+
+        if (isVersionFrame) {
+            isVersionFrame = isVersionFrame && this.buffer.get(RX_VERSION_SIZE - 1) === 0xE9; // post-amble, observed from my module, does not match the documentation!
+            if (!isVersionFrame) {
+                console.log("post-amble mismatch, expected 0xE9, got " + this.buffer.get(RX_VERSION_SIZE - 1));
+                return false;
+            }
+
+            const sensorVersion = {
+                softwareMinorVersion: this.buffer.get(4),
+                softwareMajorVersion: this.buffer.get(5),
+                hardwareMinorVersion: this.buffer.get(6),
+                hardwareMajorVersion: this.buffer.get(7),
+                sensorStatus: this.buffer.get(9),
+            };
+            this.buffer.popFront(RX_VERSION_SIZE);
+            if (this.onVersionReceived) {
+                this.onVersionReceived(sensorVersion);
+            }
+        }
+        if (this.buffer.size() > 200) {
+            // FIXME: bad hack ... sometimes the buffer os overfilled
+            this.buffer.clear();
+        }
+        return isSensorDataFrame || isVersionFrame;
     }
 
     /**
