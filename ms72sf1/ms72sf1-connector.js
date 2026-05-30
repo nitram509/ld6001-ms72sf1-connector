@@ -72,9 +72,15 @@ function bytes2SensorData(ringBuffer, offset) {
     };
 }
 
-export class Ms72sf1Parser {
+export class Ms72sf1Connector {
     constructor() {
         this.buffer = new RingBuffer(MAX_BUF_SIZE);
+        this.isReadingData = false;
+        this.isReadingConfig = false;
+    }
+
+    reset() {
+        this.buffer.clear();
     }
 
     /**

@@ -197,7 +197,7 @@ class AppUI {
 export class ConnectorApp {
     constructor() {
         this.appUi = new AppUI();
-        this.parser = new Ld6001Connector(
+        this.connector = new Ld6001Connector(
             this.onDataReceived.bind(this),
             this.onVersionReceived.bind(this)
         );
@@ -261,7 +261,7 @@ export class ConnectorApp {
         this.appUi.btnStart.addEventListener('click', () => {
             function pollSensorData() {
                 const highSensitivity = true == this.appUi.toggleHighSensitivity.checked;
-                const cmd = this.parser.createSensorDataCommand(highSensitivity);
+                const cmd = this.connector.createSensorDataCommand(highSensitivity);
                 this.sendSerialCommand(cmd);
             }
             this.appUi.pollTimerId = setInterval(pollSensorData.bind(this), 30); // FIXME: make configurable

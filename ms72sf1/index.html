@@ -2,7 +2,7 @@
 <html lang="en" xmlns="http://www.w3.org/1999/html">
 <head>
     <meta charset="UTF-8">
-    <title>LD6001A Connector and Radar UI</title>
+    <title>MS72SF1 Connector and Radar UI</title>
     <link rel="stylesheet" href="spectre.min.css">
     <style>
         .coord-system {
@@ -25,7 +25,7 @@
 <div class="container">
     <div class="columns bg-dark text-light">
         <div class="column col-auto p-1">
-            <span class="h5">LD6001A, or MS72SF1 mmWave sensor:</span>
+            <span class="h5">MS72SF1 mmWave sensor:</span>
             <button id="btn-connect" class="btn btn-primary">Connect</button>
             <select id="port-speed-select" class="form-select text-dark" style="width: auto;">
                 <option value="9600">9600</option>
@@ -73,7 +73,7 @@
 
 <div class="container">
     <div class="columns">
-        <div class="column col-4">
+        <div class="column col-3">
             <div class="panel">
                 <div class="panel-header">
                     <div class="panel-title bg-secondary p-1 h5">Configuration</div>
@@ -83,16 +83,9 @@
                 <!--                    </div>-->
                 <div class="panel-body">
                     <div class="form-group">
-                        <label class="form-label" for="btn-calibrate">Calibration</label>
-                        <button id="btn-calibrate" class="btn btn-primary">Calibrate</button>
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label" for="btn-calibrate">Version</label>
-                        <button id="btn-display-version" class="btn btn-primary">Display Version</button>
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label" for="btn-calibrate">Data</label>
-                        <button id="btn-get-sensor-data" class="btn btn-primary">Get Sensor Data</button>
+<!--                        <label class="form-label" for="btn-read-config">Calibration</label>-->
+                        <button id="btn-read-config" class="btn btn-primary">Read Config</button>
+                        <textarea id="txt-config" class="form-input" rows="10" readonly placeholder="Configuration"></textarea>
                     </div>
                 </div>
                 <!--                    <div class="panel-footer">-->
@@ -102,34 +95,34 @@
 
         </div>
 
-        <div class="column col-8">
+        <div class="column col-9">
             <div class="bg-gray p-2">
                 <div class="form-horizontal">
                     <div class="form-group">
                         <div class="col-3 col-sm-12">
                             <!--                                <label class="form-label" for="input-example-1">Name</label>-->
-                            <label class="form-label" for="btn-calibrate">Reading sensor data</label>
+                            <label class="form-label" for="btn-start">Reading sensor data</label>
                         </div>
                         <div class="col-9 col-sm-12">
                             <!--                                <input class="form-input" type="text" id="input-example-1" placeholder="Name">-->
                             <button id="btn-start" class="btn btn-primary disabled">Start</button>
                             <button id="btn-stop" class="btn btn-primary disabled">Stop</button>
                         </div>
-                        <div class="col-3 col-sm-12">
-                            <label class="form-label" for="btn-calibrate">Record data</label>
-                        </div>
-                        <div class="col-9 col-sm-12">
-                            <label class="form-switch">
-                                <input type="checkbox" disabled>
-                                <i class="form-icon"></i>
-                            </label>
-                        </div>
+<!--                        <div class="col-3 col-sm-12">-->
+<!--                            <label class="form-label" for="btn-calibrate">Record data</label>-->
+<!--                        </div>-->
+<!--                        <div class="col-9 col-sm-12">-->
+<!--                            <label class="form-switch">-->
+<!--                                <input type="checkbox" disabled>-->
+<!--                                <i class="form-icon"></i>-->
+<!--                            </label>-->
+<!--                        </div>-->
                     </div>
                 </div>
             </div>
 
             <div class="columns">
-                <div class="column col-5">
+                <div class="column col-4">
                     <div class="panel">
                         <div class="panel-header">
                             <div class="panel-title bg-secondary p-1 h5">Sensor Data History</div>
@@ -192,7 +185,7 @@
                         </div>
                         <div class="panel-body">
                             <!-- START sensor data -->
-                            <div id="sensor-0" class="tile tile-centered d-none">
+                            <div id="sensor-0" class="tile tile-centered">
                                 <div class="tile-icon">
                                     <div class="example-tile-icon text-bold p-1">#0</div>
                                 </div>
@@ -699,7 +692,7 @@
                 </div>
 
 
-                <div class="column col-7">
+                <div class="column col-8">
                     <div class="panel">
                         <div class="panel-header">
                             <div class="panel-title bg-secondary p-1 h5">Visualisation</div>

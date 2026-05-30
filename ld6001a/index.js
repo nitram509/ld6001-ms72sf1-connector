@@ -29,6 +29,7 @@ class AppUI {
         this.btnReadConfig = document.getElementById('btn-read-config');
         this.txtConfig = document.getElementById('txt-config');
         this.coordPointsLayer = document.getElementById('coord-points-layer');
+        this.portSpeedSelect = document.getElementById('port-speed-select');
 
         this.modalHelp = document.getElementById('modal-help');
         this.btnCloseHelp = document.getElementById('btn-close-help');
@@ -189,7 +190,7 @@ class AppUI {
 export class ConnectorApp {
     constructor() {
         this.appUi = new AppUI();
-        this.parser = new Ld6001aParser();
+        this.connector = new Ld6001aParser();
 
         this.port = null;
         this.serialReader = null;
@@ -240,13 +241,18 @@ export class ConnectorApp {
         if (!this.port) {
             this.port = await navigator.serial.requestPort();
         }
+        let baudRate = 115200; // default value
+        if (this.appUi.portSpeedSelect) {
+            baudRate = parseInt(this.appUi.portSpeedSelect.value);
+        }
         try {
-            await this.port.open({baudRate: 115200});   // FIXME: use baudrate from DropDown
+            await this.port.open({baudRate: baudRate});
         } catch (error) {
             console.error('Error connecting:', error);
             alert('Could not connect to serial port: ' + error.message);
         }
-        console.log('connected to ' + JSON.stringify(this.port.getInfo()));
+        console.log('connected to ' + JSON.stringify(this.port.getInfo()) + ` ${baudRate} baud.`);
+        this.parser.reset();
         await this.post_connect()
         this.readLoop();
     }
