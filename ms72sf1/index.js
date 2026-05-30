@@ -26,6 +26,31 @@ class AppUI {
         this.btnConnect = document.getElementById('btn-connect');
         this.btnStart = document.getElementById('btn-start');
         this.btnStop = document.getElementById('btn-stop');
+        this.btnStudy = document.getElementById('btn-study');
+        this.btnReset = document.getElementById('btn-reset');
+        this.btnRestore = document.getElementById('btn-restore');
+
+        this.btnIsceil = document.getElementById('btn-isceil');
+        this.inputIsceil = document.getElementById('input-isceil');
+
+        this.btnHeight = document.getElementById('btn-height');
+        this.inputHeight = document.getElementById('input-height');
+
+        this.btnHeightD = document.getElementById('btn-heightd');
+        this.inputHeightD = document.getElementById('input-heightd');
+
+        this.btnDebug = document.getElementById('btn-debug');
+        this.inputDebug = document.getElementById('input-debug');
+
+        this.btnTime = document.getElementById('btn-time');
+        this.inputTime = document.getElementById('input-time');
+
+        this.btnMonTime = document.getElementById('btn-montime');
+        this.inputMonTime = document.getElementById('input-montime');
+
+        this.btnHeaTime = document.getElementById('btn-heatime');
+        this.inputHeaTime = document.getElementById('input-heatime');
+
         this.btnReadConfig = document.getElementById('btn-read-config');
         this.txtConfig = document.getElementById('txt-config');
         this.coordPointsLayer = document.getElementById('coord-points-layer');
@@ -200,6 +225,10 @@ export class ConnectorApp {
     }
 
     bindEvents() {
+        const disableReadingConfig = function () {
+            this.connector.isReadingConfig = false;
+        }.bind(this)
+
         this.appUi.btnConnect.addEventListener('click', () => {
             if (this.port) {
                 this.disconnect();
@@ -222,13 +251,108 @@ export class ConnectorApp {
             }
         });
 
+        this.appUi.btnStudy.addEventListener('click', () => {
+            if (this.port) {
+                this.appUi.txtConfig.innerHTML = "";
+                this.connector.isReadingConfig = true;
+                setTimeout(disableReadingConfig, 1000)
+                this.sendSerialCommand('AT+STUDY\n');
+            }
+        });
+
+        this.appUi.btnIsceil.addEventListener('click', () => {
+            if (this.port) {
+                this.appUi.txtConfig.innerHTML = "";
+                this.connector.isReadingConfig = true;
+                setTimeout(disableReadingConfig, 1000)
+                let mode = this.appUi.inputIsceil.value;
+                this.sendSerialCommand('AT+ISCEIL=' + mode + '\n');
+            }
+        });
+
+        this.appUi.btnReset.addEventListener('click', () => {
+            if (this.port) {
+                this.appUi.txtConfig.innerHTML = "";
+                this.connector.isReadingConfig = true;
+                setTimeout(disableReadingConfig, 1000)
+                this.sendSerialCommand('AT+RESET\n');
+            }
+        });
+
+        this.appUi.btnRestore.addEventListener('click', () => {
+            if (this.port) {
+                this.appUi.txtConfig.innerHTML = "";
+                this.connector.isReadingConfig = true;
+                setTimeout(disableReadingConfig, 1000)
+                this.sendSerialCommand('AT+RESTORE\n');
+            }
+        });
+
+
+        this.appUi.btnHeight.addEventListener('click', () => {
+            if (this.port) {
+                this.appUi.txtConfig.innerHTML = "";
+                this.connector.isReadingConfig = true;
+                setTimeout(disableReadingConfig, 1000)
+                let height = this.appUi.inputHeight.value;
+                this.sendSerialCommand('AT+HEIGHT=' + height + '\n');
+            }
+        });
+
+        this.appUi.btnHeightD.addEventListener('click', () => {
+            if (this.port) {
+                this.appUi.txtConfig.innerHTML = "";
+                this.connector.isReadingConfig = true;
+                setTimeout(disableReadingConfig, 1000)
+                let heightD = this.appUi.inputHeightD.value;
+                this.sendSerialCommand('AT+HEIGHTD=' + heightD + '\n');
+            }
+        });
+
+        this.appUi.btnDebug.addEventListener('click', () => {
+            if (this.port) {
+                this.appUi.txtConfig.innerHTML = "";
+                this.connector.isReadingConfig = true;
+                setTimeout(disableReadingConfig, 1000)
+                let debug = this.appUi.inputDebug.value;
+                this.sendSerialCommand('AT+DEBUG=' + debug + '\n');
+            }
+        });
+
+        this.appUi.btnTime.addEventListener('click', () => {
+            if (this.port) {
+                this.appUi.txtConfig.innerHTML = "";
+                this.connector.isReadingConfig = true;
+                setTimeout(disableReadingConfig, 1000)
+                let time = this.appUi.inputTime.value;
+                this.sendSerialCommand('AT+TIME=' + time + '\n');
+            }
+        });
+
+        this.appUi.btnMonTime.addEventListener('click', () => {
+            if (this.port) {
+                this.appUi.txtConfig.innerHTML = "";
+                this.connector.isReadingConfig = true;
+                setTimeout(disableReadingConfig, 1000)
+                let montime = this.appUi.inputMonTime.value;
+                this.sendSerialCommand('AT+MONTIME=' + montime + '\n');
+            }
+        });
+
+        this.appUi.btnHeaTime.addEventListener('click', () => {
+            if (this.port) {
+                this.appUi.txtConfig.innerHTML = "";
+                this.connector.isReadingConfig = true;
+                setTimeout(disableReadingConfig, 1000)
+                let heatime = this.appUi.inputHeaTime.value;
+                this.sendSerialCommand('AT+HEATIME=' + heatime + '\n');
+            }
+        });
+
         this.appUi.btnReadConfig.addEventListener('click', () => {
             if (this.port) {
                 this.appUi.txtConfig.innerHTML = "";
                 this.connector.isReadingConfig = true;
-                const disableReadingConfig = function() {
-                    this.connector.isReadingConfig = false;
-                }.bind(this)
                 setTimeout(disableReadingConfig, 1000)
                 this.sendSerialCommand('AT+READ\n');
             }
@@ -307,30 +431,36 @@ export class ConnectorApp {
                         break;
                     }
                     if (dataRead) {
-                        // console.log('Received data:', value);
-                        // console.log('Received data (ASCII):', new TextDecoder().decode(value));
+                        console.log('Received data:', dataRead);
+                        // console.log('Received data (ASCII):', new TextDecoder().decode(dataRead));
                         if (this.connector) {
                             if (this.connector.isReadingConfig) {
+                                /*
+Example:
+{
+"PeopleCntSoftVerison":"NOP_2.07-20240730-minesemi",
+"RangeRes":0.055664,
+"VelRes":0.111289,
+"TIME":100,
+"PROG":2,
+"Range":300,
+"Sen":4,
+"Heart_Time":60,
+"Debug":3,
+"detectionHeight":270,
+"XdetectionN":-300,
+"XdetectionP":300,
+"YdetectionN":-300,
+"YdetectionP":300,
+"R":300
+}
+                                 */
                                 let txt = this.appUi.txtConfig.innerHTML;
                                 this.appUi.txtConfig.innerHTML = txt + "" + new TextDecoder().decode(dataRead);
                             } else {
                                 const sensorDatas = this.connector.parse(dataRead);
                                 this.appUi.renderSensorData(sensorDatas);
-
-                                // if (sensorDatas.length > 0) {
-                                // renderTargets(sensorDatas);
-                                // console.log('Detected targets:', sensorDatas.length);
-                                // for (const target of sensorDatas) {
-                                //     const distance = Math.sqrt(target.x ** 2 + target.y ** 2 + target.z ** 2);
-                                //     let id = [
-                                //         (target.objectId & 0xff000000) >> 24,
-                                //         (target.objectId & 0x00ff0000) >> 16,
-                                //         (target.objectId & 0x0000ff00) >> 8,
-                                //         (target.objectId & 0x000000ff),
-                                //     ]
-                                //     console.log(`Target ${id}, ${target.objectId}: x=${target.x.toFixed(2)}, y=${target.y.toFixed(2)}, z=${target.z.toFixed(2)}, dist=${distance.toFixed(2)}`);
                             }
-
                         }
                     }
                 }

@@ -78,19 +78,77 @@
                 <div class="panel-header">
                     <div class="panel-title bg-secondary p-1 h5">Configuration</div>
                 </div>
-                <!--                    <div class="panel-nav">-->
-                <!--                        &lt;!&ndash; navigation components: tabs, breadcrumbs or pagination &ndash;&gt;-->
-                <!--                    </div>-->
                 <div class="panel-body">
+
                     <div class="form-group">
-<!--                        <label class="form-label" for="btn-read-config">Calibration</label>-->
                         <button id="btn-read-config" class="btn btn-primary">Read Config</button>
-                        <textarea id="txt-config" class="form-input" rows="10" readonly placeholder="Configuration"></textarea>
+                        <textarea id="txt-config" class="form-input" rows="10" readonly
+                                  placeholder="Configuration"></textarea>
                     </div>
+
+                    <div class="form-horizontal">
+                        <div class="form-group">
+                            <div class="col-9 col-sm-12">
+                                <label class="form-label" for="btn-study">Learning mode (relearning every time you
+                                    deploy to a new location)</label>
+                            </div>
+                            <div class="col-3 col-sm-12">
+                                <button id="btn-study-old" class="form-input btn btn-primary">Study</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="input-group">
+                        <span class="input-group-addon">Mounting Mode</span>
+                        <input id="input-isceil" type="text" class="form-input" placeholder="0=wall; 1=ceil">
+                        <button id="btn-isceil" class="btn btn-primary input-group-btn">Save</button>
+                    </div>
+                    <div class="input-group">
+                        <span class="input-group-addon" title="Configure radar mounting height (unit cm, range 250-320, default 270)">Height (cm)</span>
+                        <input id="input-height" type="text" class="form-input" placeholder="250 <= xxx <= 320 default=270">
+                        <button id="btn-height" class="btn btn-primary input-group-btn">Save</button>
+                    </div>
+                    <div class="input-group">
+                        <span class="input-group-addon" title="Configuration module scan height (unit cm, range <= Installation height, default 270)">Height D (cm)</span>
+                        <input id="input-heightd" type="text" class="form-input" placeholder="xxx cm < `height`, default=270">
+                        <button id="btn-heightd" class="btn btn-primary input-group-btn">Save</button>
+                    </div>
+
+                    <div class="input-group">
+                        <span class="input-group-addon" title="Configure scan interval (unit:ms，range:100-10000，default value 100">Scan interval (ms)</span>
+                        <input id="input-time" type="text" class="form-input" placeholder="100 <= x <= 10000">
+                        <button id="btn-time" class="btn btn-primary input-group-btn">Save</button>
+                    </div>
+                    <div class="input-group">
+                        <span class="input-group-addon" title="Configure monitoring interval(units:s, range 1-99, default value 1)">Monitoring interval (ms)</span>
+                        <input id="input-montime" type="text" class="form-input" placeholder="1 <= x <= 99">
+                        <button id="btn-montime" class="btn btn-primary input-group-btn">Save</button>
+                    </div>
+                    <div class="input-group">
+                        <span class="input-group-addon" title="Configure heartbeat interval (unit s, range 10-999, default value 60)">Heartbeat interval (ms)</span>
+                        <input id="input-heatime" type="text" class="form-input" placeholder="10 <= x <= 999">
+                        <button id="btn-heatime" class="btn btn-primary input-group-btn">Save</button>
+                    </div>
+
+                    <div class="input-group">
+                        <span class="input-group-addon" title="Switching protocol (default=3:simple protocol | 1: string output | 2: test mode | 3: working mode)">Debug</span>
+                        <input id="input-debug" type="text" class="form-input" placeholder="default=3">
+                        <button id="btn-debug" class="btn btn-primary input-group-btn">Save</button>
+                    </div>
+
+                    <div class="input-group">
+                        <span class="input-group-addon" title="relearning every time you deploy to a new location">Learning mode</span>
+                        <button id="btn-study" class="btn btn-primary input-group-btn">Study</button>
+                    </div>
+                    <div class="input-group">
+                        <span class="input-group-addon" title="">Module Reset</span>
+                        <button id="btn-reset" class="btn btn-primary input-group-btn">Reset</button>
+                    </div>
+                    <div class="input-group">
+                        <span class="input-group-addon" title="Restore default Settings (flash will not be restored)">Restore defaults</span>
+                        <button id="btn-restore" class="btn btn-primary input-group-btn">Restore</button>
+                    </div>
+
                 </div>
-                <!--                    <div class="panel-footer">-->
-                <!--                        &lt;!&ndash; buttons or inputs &ndash;&gt;-->
-                <!--                    </div>-->
             </div>
 
         </div>
